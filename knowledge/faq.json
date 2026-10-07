@@ -1,7 +1,7 @@
 [
   {
     "q": ["Chi può unire due contatti doppi?", "Chi può usare il pulsante Unisci?", "Chi unisce i doppioni?", "Chi può unire i doppioni?", "Chi può fondere due record?"],
-    "r": "Solo gli Admin, con il pulsante «Unisci». Per i contatti si usa dal 19/10, per le aziende dal 24/10, per partner e studi dal 30/11: fino ad allora l'unione si fa con una procedura tecnica.",
+    "r": "Possono farlo solo gli Admin, con il pulsante «Unisci». Per i contatti si usa dal 19/10, per le aziende dal 24/10, per partner e studi dal 30/11: fino ad allora l'unione si fa con una procedura tecnica.",
     "a": "Pulsante «Unisci» solo per gli Admin: contatti dopo il 19/10, aziende dopo il 24/10, partner e studi dopo il 30/11 (fino ad allora procedura tecnica)."
   },
   {
@@ -11,12 +11,12 @@
   },
   {
     "q": ["Quando è il passaggio netto?", "Da quando i venditori usano Mercury?", "Quando si passa a Mercury?", "Quando si spengono le sync da HubSpot?", "Cosa cambia per i venditori con il passaggio netto?", "Cosa succede con il passaggio netto del 19/10?"],
-    "r": "Lunedì 19/10. Da quel giorno venditori e TMK lavorano solo in Mercury, le sincronizzazioni da HubSpot si spengono, i form dei siti vanno in linea e si usano la barra di Gmail e il Calendar.",
+    "r": "Il passaggio netto è lunedì 19/10: da quel giorno venditori e TMK lavorano solo in Mercury. Le sincronizzazioni da HubSpot si spengono, i form dei siti vanno in linea e si usano la barra di Gmail e il Calendar.",
     "a": "lun 19/10 PASSAGGIO NETTO venditori e TMK solo in Mercury; sync spente, form dei siti in linea; barra di Gmail e Calendar in uso"
   },
   {
     "q": ["Quando chiude HubSpot?", "Quando finisce il progetto?", "Qual è la data di fine del progetto?"],
-    "r": "Il 30/11: è la fine del progetto e il giorno in cui HubSpot chiude. Da quella data «Unisci» vale anche per partner e studi.",
+    "r": "HubSpot chiude il 30/11, che è anche la fine del progetto. Da quella data «Unisci» vale anche per partner e studi.",
     "a": "30/11 Fine del progetto «Unisci» anche per partner e studi"
   },
   {
@@ -26,7 +26,7 @@
   },
   {
     "q": ["Chi può approvare gli sconti?", "Chi approva le schede provvigionali?", "Chi può forzare le fasi?", "Chi ha i poteri su sconti, schede e fasi?"],
-    "r": "Solo gli Admin. Sconti, approvazione delle schede provvigionali e forzatura delle fasi sono poteri a tempo, assegnati a singole persone con una data di inizio e di fine.",
+    "r": "Gli sconti li approvano solo gli Admin, come le schede provvigionali e la forzatura delle fasi. Sono poteri a tempo, assegnati a singole persone con una data di inizio e di fine.",
     "a": "Sconti e approvazione delle schede vanno solo agli Admin, come la forzatura delle fasi (decisione del 1/10)."
   },
   {
@@ -66,12 +66,12 @@
   },
   {
     "q": ["Chi può eliminare un evento?", "Si può eliminare un evento con iscritti?"],
-    "r": "Solo un Admin, e solo se l'evento non ha iscritti, contratti né allegati ai costi. Altrimenti l'evento si annulla, non si elimina.",
+    "r": "Un evento lo può eliminare solo un Admin, e solo se non ha iscritti, contratti né allegati ai costi. Altrimenti l'evento si annulla, non si elimina.",
     "a": "Elimina solo un Admin e solo un evento senza iscritti, contratti e allegati ai costi: altrimenti si annulla."
   },
   {
     "q": ["Chi riapre un evento chiuso?", "Cosa succede agli iscritti quando chiudo un evento?"],
-    "r": "Alla chiusura chi non ha la presenza diventa assente. Riaprire l'evento può farlo solo un Admin.",
+    "r": "Quando chiudi un evento, chi non ha la presenza diventa assente. Riaprire l'evento può farlo solo un Admin.",
     "a": "Chiusura e presenze: chiudendo l'evento chi non ha la presenza diventa assente; riapre solo un Admin."
   },
   {
@@ -96,17 +96,17 @@
   },
   {
     "q": ["Chi può usare la barra di Gmail?", "Perché la barra di Gmail dice che il CRM non è attivo per il mio utente?", "A chi è attiva la barra di Mercury in Gmail?"],
-    "r": "Chi ha la sezione Commerciale e la cui email di Google è quella scritta in Mercury. Per tutti gli altri la barra dice «Il CRM di Mercury non è attivo per il tuo utente» e non mostra altro.",
+    "r": "La barra di Gmail la usa chi ha la sezione Commerciale e la cui email di Google è quella scritta in Mercury. Per tutti gli altri la barra dice «Il CRM di Mercury non è attivo per il tuo utente» e non mostra altro.",
     "a": "Lo usa chi ha la sezione Commerciale e la cui email di Google è quella scritta in Mercury; per tutti gli altri la barra dice «Il CRM di Mercury non è attivo per il tuo utente» e non mostra altro."
   },
   {
     "q": ["Da quando si usa la barra di Gmail?", "Da quando si usa il Calendar in Mercury?", "Quando arrivano Gmail e Calendar in produzione?", "Quando arriva il Calendar?", "Quando arriva la barra di Gmail?"],
-    "r": "Dal 19/10/2026, con il passaggio netto. Il codice va in produzione con il merge del 16/10 e poi Pio installa la barra per tutta l'organizzazione; fino a quel momento è in prova sulla casella di Espedito.",
+    "r": "La barra di Gmail e il Calendar si usano dal 19/10/2026, con il passaggio netto. Il codice va in produzione con il merge del 16/10 e poi Pio installa la barra per tutta l'organizzazione; fino a quel momento è in prova sulla casella di Espedito.",
     "a": "I commerciali usano la barra e il Calendar dal 19/10/2026, con il passaggio netto: la sezione Commerciale non è in produzione prima del merge."
   },
   {
     "q": ["Come registro un'email in Mercury mentre la scrivo?", "Qual è l'indirizzo da mettere in Ccn per registrare un'email?", "Cosa fa il pulsante Registra in Mercury?"],
-    "r": "Premi «Registra in Mercury» nella finestra di scrittura: aggiunge in Ccn l'indirizzo registra-crm@timevision.it (un gruppo senza membri, non arriva a nessuno) e conserva i Ccn che avevi già messo. Dopo l'invio Mercury registra l'email e la conversazione diventa seguita. Chi non ha la barra può scrivere quell'indirizzo in Ccn a mano.",
+    "r": "Mentre scrivi, premi «Registra in Mercury»: aggiunge in Ccn l'indirizzo registra-crm@timevision.it (un gruppo senza membri, non arriva a nessuno) e conserva i Ccn che avevi già messo. Dopo l'invio Mercury registra l'email e la conversazione diventa seguita. Chi non ha la barra può scrivere quell'indirizzo in Ccn a mano.",
     "a": "nella finestra di scrittura il pulsante aggiunge in Ccn l'indirizzo di Mercury (registra-crm@timevision.it, un gruppo senza membri: i messaggi non arrivano a nessuno) e conserva i Ccn che l'utente aveva già messo."
   },
   {
@@ -116,12 +116,12 @@
   },
   {
     "q": ["Ogni quanto Mercury controlla le caselle Gmail?", "Ogni quanto Mercury legge le email?"],
-    "r": "Ogni 5 minuti, per tutti gli utenti del Commerciale: cerca le conversazioni seguite e le email inviate con il suo indirizzo in Ccn. Per questo non avvisa in tempo reale.",
+    "r": "Mercury controlla le caselle ogni 5 minuti, per tutti gli utenti del Commerciale: cerca le conversazioni seguite e le email inviate con il suo indirizzo in Ccn. Per questo non avvisa in tempo reale.",
     "a": "ogni 5 minuti Mercury controlla le caselle di tutti gli utenti del Commerciale per trovare le conversazioni seguite e le email inviate con il suo indirizzo in Ccn."
   },
   {
     "q": ["Ogni quanto si riallinea il Calendar?", "Cosa succede se sposto una riunione nel Google Calendar?", "Cosa posso cambiare di una riunione in Mercury?"],
-    "r": "Il Calendar comanda: data, ora, durata, invitati e link Meet si cambiano in Google Calendar e Mercury si riallinea da solo ogni 15 minuti, con un controllo completo dei prossimi 30 giorni ogni notte. In Mercury, dopo la creazione, si cambiano solo esito e note.",
+    "r": "Il Calendar comanda: data, ora, durata, invitati e link Meet si cambiano in Google Calendar, e Mercury si riallinea da solo ogni 15 minuti, con un controllo completo dei prossimi 30 giorni ogni notte. In Mercury, dopo la creazione, si cambiano solo esito e note.",
     "a": "data, ora, durata, invitati e link Meet si cambiano nel Google Calendar, e Mercury si riallinea da solo ogni 15 minuti, con un controllo completo dei prossimi 30 giorni ogni notte."
   },
   {
@@ -136,7 +136,7 @@
   },
   {
     "q": ["Quali esiti ha una riunione?", "Quali sono gli esiti delle riunioni?", "Esiste l'esito Annullata per le riunioni?"],
-    "r": "Pianificata, Completata, Ripianificata e Mancata presentazione, con «cambia esito». Il tipo è in presenza o in videocall; la durata di partenza è un'ora. L'esito «Annullata» non esiste: una riunione cancellata nel Calendar resta nella linea del tempo come «Annullata nel calendario il …».",
+    "r": "Gli esiti di una riunione sono Pianificata, Completata, Ripianificata e Mancata presentazione, con «cambia esito». Il tipo è in presenza o in videocall; la durata di partenza è un'ora. L'esito «Annullata» non esiste: una riunione cancellata nel Calendar resta nella linea del tempo come «Annullata nel calendario il …».",
     "a": "esiti Pianificata, Completata, Ripianificata e Mancata presentazione, con «cambia esito»; tipo in presenza o in videocall; durata di partenza un'ora (in «Crea nel calendario» a pillole di 30 minuti, 1 ora, 1 ora e mezza e 2 ore; le altre durate con «Altra data o ora»). Non c'è l'esito «Annullata»."
   },
   {
@@ -161,7 +161,7 @@
   },
   {
     "q": ["Cosa fare se un invio del form è in errore?", "Cosa fare se un form non invia i dati?", "Come rielaboro un invio del form?"],
-    "r": "Vai in Marketing → Invii: ogni invio ha il suo stato (In coda, Elaborato, Errore, Scartato). Un invio in errore avvisa il proprietario del form; con «Rielabora» lo riprovi, con «Scarta» non crea né aggiorna nessuno. Per qualsiasi problema scrivi a Espedito con il nome del form e uno screenshot.",
+    "r": "Vai in Marketing → Invii, dove ogni invio ha il suo stato (In coda, Elaborato, Errore, Scartato). Un invio in errore avvisa il proprietario del form; con «Rielabora» lo riprovi, con «Scarta» non crea né aggiorna nessuno. Per qualsiasi problema scrivi a Espedito con il nome del form e uno screenshot.",
     "a": "Un invio in errore avvisa il proprietario del form. Con Rielabora lo riprovi; con Scarta non crea né aggiorna nessuno e resta nell'elenco come Scartato."
   },
   {
@@ -176,52 +176,52 @@
   },
   {
     "q": ["Cosa fa l'esito non contattare del TMK?", "Cosa succede ai consensi con l'esito non contattare?"],
-    "r": "Revoca tutti e tre i consensi: marketing, profilazione e cessione a terzi. Un consenso già revocato tiene la data della sua revoca.",
+    "r": "L'esito «non contattare» revoca tutti e tre i consensi: marketing, profilazione e cessione a terzi. Un consenso già revocato tiene la data della sua revoca.",
     "a": "L'esito «non contattare» revoca tutti e tre i consensi (marketing, profilazione e cessione a terzi); un consenso già revocato tiene la data della sua revoca (domanda 109, chiusa il 2/10)."
   },
   {
     "q": ["Come funziona la coda del TMK?", "Cosa deve fare il TMK quando chiama un contatto?", "Quali righe può prenotare un operatore TMK?"],
-    "r": "Ogni operatore prenota solo le righe libere o le sue; una riga di un altro operatore va prima riassegnata, anche dal responsabile. Fino al 19/10 la coda salta i partner ancora gestiti in HubSpot.",
+    "r": "Nella coda del TMK ogni operatore prenota solo le righe libere o le sue; una riga di un altro operatore va prima riassegnata, anche dal responsabile. Fino al 19/10 la coda salta i partner ancora gestiti in HubSpot.",
     "a": "Fino al 19/10 la coda salta i partner ancora gestiti in HubSpot; ognuno prenota solo le righe libere o le sue (una riga di un altro operatore va prima riassegnata, anche dal responsabile)."
   },
   {
     "q": ["Quando posso usare Unisci per le aziende?", "Da quando si uniscono le aziende?", "Da quando si uniscono partner e studi?"],
-    "r": "Per le aziende dal 24/10, per partner e studi dal 30/11; per i contatti già dal 19/10. Il pulsante «Unisci» è solo per gli Admin e fino a quelle date l'unione si fa con una procedura tecnica.",
+    "r": "«Unisci» si usa per le aziende dal 24/10, per partner e studi dal 30/11 e per i contatti già dal 19/10. Il pulsante è solo per gli Admin e fino a quelle date l'unione si fa con una procedura tecnica.",
     "a": "Pulsante «Unisci» solo per gli Admin: contatti dopo il 19/10, aziende dopo il 24/10, partner e studi dopo il 30/11 (fino ad allora procedura tecnica)."
   },
   {
     "q": ["Come si iscrivono le persone a un evento?", "Come arrivano gli iscritti a un evento?", "Quali stati ha un'iscrizione a un evento?"],
-    "r": "Dal form, da un file Excel o CSV, a mano oppure in blocco dalle tabelle di partner e contatti; una persona una volta sola per evento. Gli stati sono iscritto, confermato, presente o assente, annullato. Iscrivere a mano e segnare le presenze lo fa tutta la sezione Commerciale, con l'evento pubblicato.",
+    "r": "Le persone si iscrivono a un evento dal form, da un file Excel o CSV, a mano oppure in blocco dalle tabelle di partner e contatti; una persona una volta sola per evento. Gli stati sono iscritto, confermato, presente o assente, annullato. Iscrivere a mano e segnare le presenze lo fa tutta la sezione Commerciale, con l'evento pubblicato.",
     "a": "Iscritti: partner e contatti, una persona una volta per evento; si iscrivono dal form, da un file Excel o CSV, a mano o in blocco dalle tabelle di partner e contatti."
   },
   {
     "q": ["Chi sono gli operatori TMK?", "Chi è il responsabile del TMK?"],
-    "r": "Gli operatori sono Messina, Loporto, Inserra, Poto e Cassese. La responsabile è Giancarla Cassese, manager.",
+    "r": "Gli operatori TMK sono Messina, Loporto, Inserra, Poto e Cassese. La responsabile è Giancarla Cassese, manager.",
     "a": "TMK (decisioni del 1/10 e del 2/10): operatori Messina, Loporto, Inserra, Poto e Cassese; responsabile Giancarla Cassese, manager."
   },
   {
     "q": ["Cosa legge JobSignal da Mercury?", "Come JobSignal legge i candidati da Mercury?", "Entro quando JobSignal passa a Mercury?"],
-    "r": "Una lettura dedicata di sola lettura: i candidati con i loro profili di placement, la lista delle voci con i codici CP2021 e la ricerca delle aziende. Tutto con le chiavi di Mercury, senza codice fiscale, data di nascita e categorie protette; non arrivano i candidati che hanno negato o revocato il consenso alla profilazione. JobSignal deve passare a Mercury entro il 30/11, quando HubSpot chiude.",
+    "r": "JobSignal legge da Mercury con una lettura dedicata, di sola lettura: i candidati con i loro profili di placement, la lista delle voci con i codici CP2021 e la ricerca delle aziende. Tutto con le chiavi di Mercury, senza codice fiscale, data di nascita e categorie protette; non arrivano i candidati che hanno negato o revocato il consenso alla profilazione. JobSignal deve passare a Mercury entro il 30/11, quando HubSpot chiude.",
     "a": "Con i profili di placement Mercury le dà una lettura dedicata, di sola lettura: candidati con i profili e la lista delle voci con i codici CP2021, più la ricerca delle aziende."
   },
   {
     "q": ["Chi vede le categorie protette?", "Le categorie protette vanno nell'export?"],
-    "r": "Solo Admin e Manager le vedono e le filtrano: sono un dato sulla salute. Non vanno mai nell'export.",
+    "r": "Le categorie protette le vedono e le filtrano solo Admin e Manager, perché sono un dato sulla salute. Non vanno mai nell'export.",
     "a": "Le categorie protette sono un dato sulla salute: le vedono e le filtrano solo Admin e Manager, e non vanno mai nell'export."
   },
   {
     "q": ["Chi può modificare la lista delle professioni?", "Chi gestisce le professioni?"],
-    "r": "Solo gli Admin, dalla pagina Professioni: aggiungere, rinominare, cambiare area, togliere e sostituire. Una voce tolta si sostituisce con un'altra su tutte le persone che l'avevano.",
+    "r": "La lista delle professioni la gestiscono solo gli Admin, dalla pagina Professioni: aggiungere, rinominare, cambiare area, togliere e sostituire. Una voce tolta si sostituisce con un'altra su tutte le persone che l'avevano.",
     "a": "La lista la gestiscono solo gli Admin: una voce tolta si sostituisce con un'altra su tutte le persone che l'avevano."
   },
   {
     "q": ["Quando arrivano i profili di placement?", "Quando viene rilasciata la lettura per JobSignal?"],
-    "r": "Il rilascio è stimato nella prima settimana di novembre: i lavori partono dal 20/10, dopo il passaggio netto, e durano circa due settimane. Insieme ai profili arriva la lettura per JobSignal.",
+    "r": "I profili di placement arrivano nella prima settimana di novembre, secondo la stima: i lavori partono dal 20/10, dopo il passaggio netto, e durano circa due settimane. Insieme ai profili arriva la lettura per JobSignal.",
     "a": "Rilascio stimato nella prima settimana di novembre."
   },
   {
     "q": ["Chi paga una trattativa?", "Chi può essere il pagante di una trattativa?"],
-    "r": "Un'azienda, un patronato, la persona stessa o un ente finanziatore. Mercury lo propone da solo (se c'è un'azienda, l'azienda; se il servizio è finanziato, l'ente; altrimenti la persona) e si corregge a mano.",
+    "r": "Una trattativa la può pagare un'azienda, un patronato, la persona stessa o un ente finanziatore. Mercury lo propone da solo (se c'è un'azienda, l'azienda; se il servizio è finanziato, l'ente; altrimenti la persona) e si corregge a mano.",
     "a": "Chi paga proposta 26/09 un'azienda, un patronato, la persona stessa o un ente finanziatore."
   },
   {
@@ -241,7 +241,7 @@
   },
   {
     "q": ["Chi può creare una nuova azienda già esistente di un altro Account?", "Cosa succede se inserisco un'azienda che esiste già?"],
-    "r": "Vedi l'avviso «esiste già, è di …» e non puoi aggiornarla né unirla: la aggiorna chi la vede.",
+    "r": "Se l'azienda esiste già ed è di un altro Account, vedi l'avviso «esiste già, è di …» e non puoi aggiornarla né unirla: la aggiorna chi la vede.",
     "a": "Azienda che esiste già ed è di un altro Account: chi la inserisce vede l'avviso «esiste già, è di …» e non la aggiorna né la unisce; la aggiorna chi la vede."
   },
   {
@@ -266,12 +266,12 @@
   },
   {
     "q": ["Quali campi posso esportare in Excel?", "IBAN e dati di nascita si esportano?"],
-    "r": "Tutti i campi di ogni oggetto tranne IBAN e dati di nascita. Se serviranno, si daranno solo con un potere dedicato.",
+    "r": "In Excel puoi esportare tutti i campi di ogni oggetto tranne IBAN e dati di nascita. Se serviranno, si daranno solo con un potere dedicato.",
     "a": "Colonne ed export Excel: si possono scegliere tutti i campi di ogni oggetto tranne IBAN e dati di nascita; se serviranno, si daranno solo con un potere dedicato (decisione del 30/09)."
   },
   {
     "q": ["Chi può usare il Marketing in Mercury?", "Chi ha accesso ai form e agli invii dei siti?"],
-    "r": "Gli Admin e le aree MARKOM, IT e INNOVAZIONE, sempre con la sezione Commerciale.",
+    "r": "Il Marketing, cioè form e invii dei siti, lo usano gli Admin e le aree MARKOM, IT e INNOVAZIONE, sempre con la sezione Commerciale.",
     "a": "Marketing (form e invii dei siti): Admin e aree MARKOM, IT e INNOVAZIONE, sempre con la sezione Commerciale."
   },
   {

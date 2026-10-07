@@ -363,14 +363,19 @@ function normalizeQuestion(q: string): string {
 
 // Trims a reply to its first sentences, never cutting inside one. Unlike
 // splitSentences this keeps short sentences ("Lunedì 19/10.") on their own.
-function firstSentences(text: string, max: number): string {
+// Takes `max` sentences, and one more while the reply is still shorter than
+// `minChars`: "Lunedì 19/10." alone is exact but curt, so the next sentence
+// comes along and the reply reads like a colleague answering.
+function firstSentences(text: string, max: number, minChars: number): string {
   const parts = text.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý«"(\d])/).filter(Boolean);
-  return parts.slice(0, max).join(" ");
+  let out = parts.slice(0, max).join(" ");
+  for (let i = max; i < parts.length && out.length < minChars; i++) out += " " + parts[i];
+  return out;
 }
 
 function trimReply(reply: string, d: Depth): string {
-  if (d === "short") return firstSentences(reply, 1);
-  if (d === "normal") return firstSentences(reply, 2);
+  if (d === "short") return firstSentences(reply, 1, 90);
+  if (d === "normal") return firstSentences(reply, 2, 160);
   return reply;
 }
 
@@ -381,11 +386,13 @@ function replyFor(passage: Passage, sentence: string, d: Depth): string {
   const i = parts.indexOf(sentence);
   let out = naturalize(sentence);
   if (i < 0) return out;
-  const budget = d === "short" ? 0 : d === "normal" ? 1 : 4;
+  const budget = d === "short" ? 1 : d === "normal" ? 2 : 4;
+  const minChars = d === "short" ? 90 : d === "normal" ? 160 : 0;
   let added = 0;
   for (let j = i + 1; j < parts.length && added < budget; j++) {
     const next = parts[j];
-    if (d === "normal" && sentence.length >= 90) break;
+    // Below "long", a further sentence comes only while the reply is still short.
+    if (d !== "long" && out.length >= minChars) break;
     if (next.length > 300) break;
     out += " " + naturalize(next, false);
     added++;

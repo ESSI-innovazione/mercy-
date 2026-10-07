@@ -1,8 +1,8 @@
 import { loadKnowledge } from "@/lib/knowledge";
+import { isAuthorized } from "@/lib/auth";
 
 export const runtime = "nodejs";
-// Re-check the artifact at most every 5 minutes.
-export const revalidate = 300;
+export const dynamic = "force-dynamic";
 
 interface FrameMeta {
   ver?: string;
@@ -12,6 +12,9 @@ interface FrameMeta {
 }
 
 export async function GET() {
+  if (!(await isAuthorized())) {
+    return new Response("Non autorizzato.", { status: 401 });
+  }
   const { meta } = loadKnowledge();
   const result = {
     knowledge: {

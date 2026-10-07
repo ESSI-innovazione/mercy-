@@ -2,6 +2,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import { NextRequest } from "next/server";
 import { loadKnowledge } from "@/lib/knowledge";
 import { buildSystemPrompt } from "@/lib/prompt";
+import { isAuthorized } from "@/lib/auth";
 
 export const runtime = "nodejs";
 export const maxDuration = 120;
@@ -35,6 +36,9 @@ function sanitizeTurns(input: unknown): ChatTurn[] {
 }
 
 export async function POST(req: NextRequest) {
+  if (!(await isAuthorized())) {
+    return new Response("Non autorizzato.", { status: 401 });
+  }
   if (!process.env.ANTHROPIC_API_KEY) {
     return new Response("ANTHROPIC_API_KEY non configurata sul server.", { status: 500 });
   }

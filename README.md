@@ -46,7 +46,7 @@ L'endpoint pubblico dei metadati dell'artifact (`https://claude.ai/api/frame/<uu
 
 ### Accesso
 
-Gate a password condivisa: `APP_PASSWORD`. Chi la inserisce in `/login` riceve un cookie (90 giorni). Senza `APP_PASSWORD` il gate è spento (solo per sviluppo locale). Non c'è registrazione né gestione utenti: è pensato per un gruppo interno.
+Gate a password condivisa: `APP_PASSWORD`. Chi la inserisce in `/login` riceve un cookie (90 giorni); la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). Senza `APP_PASSWORD` il gate è spento (solo per sviluppo locale). Non c'è registrazione né gestione utenti: è pensato per un gruppo interno.
 
 ### Interfaccia
 
@@ -72,7 +72,6 @@ lib/
   auth.ts, utils.ts
 knowledge/
   01-…04-*.md, meta.json le quattro pagine della Mappa e la loro versione
-middleware.ts            gate a password
 ```
 
 ## Variabili d'ambiente (Vercel → Settings → Environment Variables)

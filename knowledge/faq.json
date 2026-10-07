@@ -195,6 +195,16 @@
     "a": "Iscritti: partner e contatti, una persona una volta per evento; si iscrivono dal form, da un file Excel o CSV, a mano o in blocco dalle tabelle di partner e contatti."
   },
   {
+    "q": ["Quali sono le regole sulle email dei partner?", "Quante email può avere un partner?", "Qual è l'email che usa Finance per i partner?"],
+    "r": "Come i contatti, un partner ha una email principale e N supplementari, e da ognuna Mercury lo riconosce (form, fusioni). Una sola è segnata «Amministrazione»: è l'unico indirizzo che usa Finance. Dopo l'import si recuperano le email in più che HubSpot aveva e l'import non ha preso; un'email tolta o sostituita non riconosce più il partner, con una riga nello storico.",
+    "a": "come i contatti, un partner ha una email principale e N supplementari, e da ognuna Mercury lo riconosce (form, fusioni)."
+  },
+  {
+    "q": ["Quante email può avere un contatto?", "Un contatto può avere più email?"],
+    "r": "Un contatto ha una email principale e può averne altre, supplementari; tutte passano dal registro e sono uniche. Nell'unione di due contatti, «Tieni entrambi» aggiunge l'email come supplementare.",
+    "a": "un contatto ha una email principale e può averne altre, supplementari; tutte passano dal registro e sono uniche."
+  },
+  {
     "q": ["Chi sono gli operatori TMK?", "Chi è il responsabile del TMK?"],
     "r": "Gli operatori TMK sono Messina, Loporto, Inserra, Poto e Cassese. La responsabile è Giancarla Cassese, manager.",
     "a": "TMK (decisioni del 1/10 e del 2/10): operatori Messina, Loporto, Inserra, Poto e Cassese; responsabile Giancarla Cassese, manager."

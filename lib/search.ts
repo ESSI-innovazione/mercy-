@@ -363,41 +363,57 @@ function normalizeQuestion(q: string): string {
 
 // Trims a reply to its first sentences, never cutting inside one. Unlike
 // splitSentences this keeps short sentences ("Lunedì 19/10.") on their own.
-// Takes `max` sentences, and one more while the reply is still shorter than
-// `minChars`: "Lunedì 19/10." alone is exact but curt, so the next sentence
-// comes along and the reply reads like a colleague answering.
-function firstSentences(text: string, max: number, minChars: number): string {
-  const parts = text.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý«"(\d])/).filter(Boolean);
-  let out = parts.slice(0, max).join(" ");
-  for (let i = max; i < parts.length && out.length < minChars; i++) out += " " + parts[i];
-  return out;
-}
-
+// FAQ replies are written to be complete: they are never cut. A "long"
+// question adds nothing more, since the reply already says it all.
 function trimReply(reply: string, d: Depth): string {
-  if (d === "short") return firstSentences(reply, 1, 90);
-  if (d === "normal") return firstSentences(reply, 2, 160);
+  void d;
   return reply;
 }
 
-// The reply for a search hit: the best sentence, then as many following
-// sentences of the same passage as the depth asks for.
-function replyFor(passage: Passage, sentence: string, d: Depth): string {
+// The reply for a search hit: every sentence of the passage that bears on the
+// question, in the order of the Mappa, with the best one always included.
+// A "long" question gets the whole passage.
+function replyFor(
+  idx: Index,
+  passage: Passage,
+  sentence: string,
+  weights: Map<string, { weight: number; from: string }>,
+  d: Depth
+): string {
   const parts = splitSentences(passage.text);
-  const i = parts.indexOf(sentence);
-  let out = naturalize(sentence);
-  if (i < 0) return out;
-  const budget = d === "short" ? 1 : d === "normal" ? 2 : 4;
-  const minChars = d === "short" ? 90 : d === "normal" ? 160 : 0;
-  let added = 0;
-  for (let j = i + 1; j < parts.length && added < budget; j++) {
-    const next = parts[j];
-    // Below "long", a further sentence comes only while the reply is still short.
-    if (d !== "long" && out.length >= minChars) break;
-    if (next.length > 300) break;
-    out += " " + naturalize(next, false);
-    added++;
+  const best = parts.indexOf(sentence);
+  if (best < 0) return naturalize(sentence);
+
+  const relevant = parts.map((s, i) => {
+    if (i === best || d === "long") return true;
+    const toks = new Set(tokenize(s));
+    let score = 0;
+    for (const [term, { weight }] of weights) if (toks.has(term)) score += weight * idf(idx, term);
+    return score > 0;
+  });
+
+  // Keep the reply readable: at most five sentences or about 800 characters,
+  // dropping the farthest relevant sentences first.
+  const chosen = parts.map((_, i) => relevant[i]);
+  const total = () => parts.filter((_, i) => chosen[i]).reduce((n, s) => n + s.length + 1, 0);
+  const count = () => chosen.filter(Boolean).length;
+  while (d !== "long" && (count() > 5 || total() > 800)) {
+    let far = -1;
+    for (let i = 0; i < parts.length; i++) {
+      if (chosen[i] && i !== best && (far < 0 || Math.abs(i - best) > Math.abs(far - best))) far = i;
+    }
+    if (far < 0) break;
+    chosen[far] = false;
   }
-  return out;
+
+  const out: string[] = [];
+  let first = true;
+  parts.forEach((s, i) => {
+    if (!chosen[i]) return;
+    out.push(naturalize(s, first));
+    first = false;
+  });
+  return out.join(" ");
 }
 
 const GREETING = /^(ciao|salve|buongiorno|buonasera|buon pomeriggio|hey|hello|hi|ehi)\b/i;
@@ -605,7 +621,7 @@ export function answer(question: string): Answer {
   return {
     ...base,
     kind: weak ? "weak" : "hit",
-    reply: weak ? weakMessage : replyFor(chosen, sentence, d),
+    reply: weak ? weakMessage : replyFor(idx, chosen, sentence, expandQuery(qTokens, idx.df.keys()), d),
     short: weak ? null : sentence,
     passage: toAnswerPassage(chosen, meta, sentence),
     seeAlso: others.map((x) => toAnswerPassage(x, meta, null)),

@@ -3,6 +3,7 @@ import {
   ALLOWED_DOMAIN,
   AUTH_COOKIE,
   gateEnabled,
+  gateMisconfigured,
   isCompanyEmail,
   normalizeEmail,
   tokenFor,
@@ -13,6 +14,12 @@ export const runtime = "nodejs";
 export async function POST(req: NextRequest) {
   if (!gateEnabled()) {
     return NextResponse.json({ ok: true });
+  }
+  if (gateMisconfigured()) {
+    return NextResponse.json(
+      { ok: false, error: "APP_PASSWORD non è impostata su Vercel: nessuno può entrare." },
+      { status: 503 }
+    );
   }
   let email = "";
   let password = "";

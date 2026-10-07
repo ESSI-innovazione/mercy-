@@ -35,12 +35,19 @@ export async function tokenFor(email: string, password: string): Promise<string>
   return `${e}.${await sha256Hex(`mercy:${e}:${password}`)}`;
 }
 
+/** The gate is off only in local development without APP_PASSWORD; never in production. */
 export function gateEnabled(): boolean {
-  return Boolean(process.env.APP_PASSWORD);
+  return Boolean(process.env.APP_PASSWORD) || process.env.NODE_ENV === "production";
+}
+
+/** True when the deployment is missing APP_PASSWORD and therefore nobody can sign in. */
+export function gateMisconfigured(): boolean {
+  return gateEnabled() && !process.env.APP_PASSWORD;
 }
 
 /** Email of the signed-in colleague, or null when the cookie is missing or invalid. */
 export async function currentUser(): Promise<string | null> {
+  if (gateMisconfigured()) return null;
   const store = await cookies();
   const got = store.get(AUTH_COOKIE)?.value;
   if (!got) return null;

@@ -47,7 +47,7 @@ Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nes
 
 ### Accesso
 
-Accesso riservato ai colleghi: in `/login` si inseriscono l'**email aziendale** (solo indirizzi `@timevision.it`, controllati lato server in `lib/auth.ts`) e la password condivisa `APP_PASSWORD`. Chi entra riceve un cookie (90 giorni) che contiene l'email e un'impronta SHA-256 di email + password; la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). Senza `APP_PASSWORD` il gate è spento (solo per sviluppo locale). Non c'è registrazione né gestione utenti: il dominio dell'email è il filtro, la password condivisa è la chiave.
+Accesso riservato ai colleghi: in `/login` si inseriscono l'**email aziendale** (solo indirizzi `@timevision.it`, controllati lato server in `lib/auth.ts`) e la password condivisa `APP_PASSWORD`. Chi entra riceve un cookie (90 giorni) che contiene l'email e un'impronta SHA-256 di email + password; la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). In produzione il gate è sempre acceso: se `APP_PASSWORD` manca su Vercel nessuno può entrare e il login risponde «APP_PASSWORD non è impostata su Vercel». Solo in sviluppo locale, senza `APP_PASSWORD`, il gate è spento. Non c'è registrazione né gestione utenti: il dominio dell'email è il filtro, la password condivisa è la chiave.
 
 La pagina di login usa il template «Mercury» (sfondo liquido con filtro gooey, campi con sottolineatura luminosa) ricolorato nella palette di Mercy: navy `#0F172B` e arancio `#FC5A00`. Vive in `components/ui/mercury-login.tsx`.
 

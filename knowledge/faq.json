@@ -100,7 +100,7 @@
     "a": "Lo usa chi ha la sezione Commerciale e la cui email di Google è quella scritta in Mercury; per tutti gli altri la barra dice «Il CRM di Mercury non è attivo per il tuo utente» e non mostra altro."
   },
   {
-    "q": ["Da quando si usa la barra di Gmail?", "Da quando si usa il Calendar in Mercury?", "Quando arrivano Gmail e Calendar in produzione?"],
+    "q": ["Da quando si usa la barra di Gmail?", "Da quando si usa il Calendar in Mercury?", "Quando arrivano Gmail e Calendar in produzione?", "Quando arriva il Calendar?", "Quando arriva la barra di Gmail?"],
     "r": "Dal 19/10/2026, con il passaggio netto. Il codice va in produzione con il merge del 16/10 e poi Pio installa la barra per tutta l'organizzazione; fino a quel momento è in prova sulla casella di Espedito.",
     "a": "I commerciali usano la barra e il Calendar dal 19/10/2026, con il passaggio netto: la sezione Commerciale non è in produzione prima del merge."
   },

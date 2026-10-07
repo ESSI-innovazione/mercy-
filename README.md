@@ -40,10 +40,27 @@ L'endpoint pubblico dei metadati dell'artifact (`https://claude.ai/api/frame/<uu
 
 Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nessun costo per domanda, nessun dato che esce dal server.
 
+L'obiettivo è che chi chiede trovi la soluzione in fretta: una riga di risposta, il passaggio da cui viene, e onestà quando la Mappa non risponde.
+
 - All'avvio il server spezza le quattro pagine in passaggi (ogni punto elenco, paragrafo o riga di tabella), ricordando sezione e sottosezione di ciascuno (`lib/search.ts`).
-- Ogni domanda viene normalizzata (minuscole, senza accenti, parole vuote tolte, radici troncate per gestire singolare/plurale) e confrontata con i passaggi con **BM25**; le parole che compaiono nel titolo della sezione pesano di più e un piccolo dizionario di sinonimi collega per esempio «doppioni» a «unione/unisci/fusione».
-- La risposta cita i passaggi migliori così come sono scritti, con sezione, pagina e versione della Mappa. Se nessun passaggio è abbastanza vicino, Mercy lo dice e suggerisce parole del lessico di Mercury.
+- **FAQ curate** (`knowledge/faq.json`): per le domande più frequenti ci sono varianti scritte a mano con la frase esatta della Mappa che risponde. Si controllano prima della ricerca. Ogni frase viene cercata nel testo della Mappa all'avvio: se una versione nuova della Mappa non la contiene più, la voce si spegne da sola (con un avviso nel log) e non si mostra mai una citazione vecchia.
+- **Ricerca**: la domanda viene normalizzata (minuscole, senza accenti, parole vuote tolte, radici troncate per singolare/plurale) e confrontata con i passaggi con **BM25**; le parole del titolo della sezione pesano di più; un dizionario di sinonimi (`lib/text.ts`) collega per esempio «doppioni» a «unisci/fusione», e le radici si abbinano anche per prefisso («doppi» trova «doppioni»).
+- **Risposta breve**: dentro i passaggi migliori Mercy sceglie la singola frase che risponde meglio e la mette in testa, in evidenza. Il tipo di domanda guida la scelta: «chi può…» preferisce frasi che nominano un ruolo (Admin, Manager, TMK…), «quando…» frasi con una data, «cosa vedo…» frasi sulla visibilità, «come si…» frasi con pulsanti e passaggi.
+- **Un solo passaggio in chiaro**: sotto la risposta breve c'è il passaggio completo da cui viene, con la frase evidenziata, sezione, pagina e link alla Mappa. Gli altri passaggi pertinenti stanno in «Vedi anche», chiusi, e si aprono con un clic.
+- **Quando la Mappa non risponde**: se il passaggio migliore non contiene la metà delle parole della domanda, Mercy lo dice («La Mappa non risponde direttamente…») e mostra il passaggio più vicino senza spacciarlo per risposta. Se non trova nulla, suggerisce parole del lessico di Mercury.
+- **Domande collegate**: dopo ogni risposta, due o tre chip con le FAQ dello stesso passaggio o della stessa sezione, oppure i titoli delle altre sezioni trovate («Cosa dice la Mappa su: …» apre quella sezione nell'ordine della Mappa).
+- **Link alla Mappa**: le sezioni che nell'artifact hanno un id (`anchors` in `knowledge/meta.json`: oggi «Gmail e Calendar» e «Chi lavora e cosa vede») hanno un link diretto; per le altre il link apre la Mappa e la risposta dice pagina e sezione. Per avere link diretti ovunque, il team di Espedito deve aggiungere un `id` ai titoli `h2`/`h3` dell'artifact; poi basta aggiornare `anchors`.
 - Saluti e ringraziamenti hanno risposte fisse.
+
+L'API (`POST /api/chat`) restituisce la risposta strutturata in JSON (`Answer` in `lib/search.ts`: `kind`, `short`, `passage`, `seeAlso`, `followUps`, `message`, `source`) e l'interfaccia la impagina.
+
+### Registro delle domande
+
+Ogni domanda viene registrata con l'esito (`faq`, `hit`, `weak`, `none`), il punteggio, la copertura delle parole e la sezione della risposta (`lib/log.ts`). Serve a leggere una volta a settimana cosa chiedono i colleghi e cosa non trovano, e ad aggiungere FAQ o sinonimi: è l'unico modo in cui Mercy migliora nel tempo.
+
+- Con `MERCY_LOG_URL` e `MERCY_LOG_KEY` impostate, le righe vanno nella tabella `mercy_questions` di un progetto Supabase (SQL in `supabase/mercy_questions.sql`: tabella, indici, RLS con sola scrittura per la chiave pubblica). Proposta: il progetto `jobsignal` (ref `isqqbrferokpfzcbhivy`), con la sua chiave *publishable*.
+- Senza variabili, ogni domanda finisce nei log di Vercel come riga `mercy.question {…}`.
+- Lettura settimanale: `select created_at, question, kind, score, coverage, section from mercy_questions where kind in ('weak','none') order by created_at desc;`
 
 ### Accesso
 
@@ -58,7 +75,7 @@ La pagina di login usa il template «Mercury» (sfondo liquido con filtro gooey,
 
 ### Interfaccia
 
-Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con auto-ridimensionamento, suggerimenti rapidi (passaggio netto, fasi del partner, barra di Gmail, doppioni, consensi, record di altri Account, form dei siti), poi la conversazione con composer fisso in basso. Colori: primario `#0F172B` (navy), secondario `#FC5A00` (arancio).
+Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con auto-ridimensionamento, suggerimenti rapidi (passaggio netto, fasi del partner, barra di Gmail, doppioni, consensi, record di altri Account, form dei siti), poi la conversazione con composer fisso in basso. Ogni risposta mostra: «Risposta breve», il passaggio con la frase evidenziata e il link alla Mappa, «Vedi anche» richiudibile, chip con le domande collegate, fonte e versione. Colori: primario `#0F172B` (navy), secondario `#FC5A00` (arancio).
 
 ## Struttura
 
@@ -66,7 +83,7 @@ Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con a
 app/
   page.tsx               pagina principale (chat)
   login/page.tsx         pagina di accesso (email @timevision.it + password)
-  api/chat/route.ts      risposta: ricerca nella Mappa
+  api/chat/route.ts      risposta strutturata (FAQ, ricerca, frase breve) + registro domande
   api/status/route.ts    confronto versione artifact / knowledge
   api/login/route.ts     imposta il cookie
   layout.tsx, globals.css
@@ -76,11 +93,17 @@ components/ui/
   textarea.tsx           shadcn textarea
 lib/
   knowledge.ts           carica knowledge/*.md + meta.json
-  search.ts              indice BM25 e formattazione della risposta
+  text.ts                normalizzazione, radici, stopword, sinonimi, tipo di domanda
+  search.ts              indice BM25, scelta della frase, risposta strutturata
+  faq.ts                 FAQ curate: caricamento e abbinamento
+  log.ts                 registro delle domande (Supabase o log di Vercel)
   markdown.ts            Markdown -> HTML minimale
   auth.ts, utils.ts
 knowledge/
-  01-…04-*.md, meta.json le quattro pagine della Mappa e la loro versione
+  01-…04-*.md, meta.json le quattro pagine della Mappa, la loro versione, gli anchor
+  faq.json               domande frequenti con la frase esatta della Mappa
+supabase/
+  mercy_questions.sql    tabella del registro delle domande
 ```
 
 ## Variabili d'ambiente (Vercel → Settings → Environment Variables)
@@ -88,6 +111,8 @@ knowledge/
 | Nome | Obbligatoria | Note |
 |------|--------------|------|
 | `APP_PASSWORD` | consigliata | password condivisa; senza di essa il login è un'anteprima che chiede solo l'email `@timevision.it` |
+| `MERCY_LOG_URL` | no | URL del progetto Supabase che ospita `mercy_questions` (es. `https://isqqbrferokpfzcbhivy.supabase.co`); senza, il registro va nei log di Vercel |
+| `MERCY_LOG_KEY` | no | chiave *publishable* (anon) dello stesso progetto; la tabella accetta solo inserimenti |
 
 ## Sviluppo locale
 

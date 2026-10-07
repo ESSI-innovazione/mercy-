@@ -4,9 +4,13 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
+import type { Answer, AnswerPassage } from "@/lib/search";
 import {
   ArrowUpIcon,
   CalendarClock,
+  ChevronDown,
+  ChevronRight,
+  ExternalLink,
   FileText,
   GitMerge,
   LoaderCircle,
@@ -60,7 +64,8 @@ function useAutoResizeTextarea({ minHeight, maxHeight }: UseAutoResizeTextareaPr
 interface ChatMessage {
   id: string;
   role: "user" | "assistant";
-  content: string;
+  content: string; // the user's text, or an error note for the assistant
+  answer?: Answer; // the structured answer from /api/chat
 }
 
 interface Status {
@@ -74,32 +79,32 @@ const SUGGESTIONS: { icon: React.ReactNode; label: string; prompt: string }[] = 
   {
     icon: <CalendarClock className="w-4 h-4" />,
     label: "Passaggio netto del 19/10",
-    prompt: "Cosa cambia per i venditori con il passaggio netto del 19/10?",
+    prompt: "Quando è il passaggio netto?",
   },
   {
     icon: <Waypoints className="w-4 h-4" />,
     label: "Fasi del partner",
-    prompt: "Quali sono le fasi di un partner e cosa fa avanzare ciascuna?",
+    prompt: "Quali sono le fasi di un partner?",
   },
   {
     icon: <Mail className="w-4 h-4" />,
     label: "Barra di Gmail",
-    prompt: "Come funziona la barra di Mercury in Gmail e cosa registra?",
+    prompt: "Chi può usare la barra di Gmail?",
   },
   {
     icon: <GitMerge className="w-4 h-4" />,
     label: "Unire i doppioni",
-    prompt: "Come si uniscono due contatti doppi e chi può farlo?",
+    prompt: "Chi può unire due contatti doppi?",
   },
   {
     icon: <Shield className="w-4 h-4" />,
     label: "Consensi",
-    prompt: "Come vengono gestiti i consensi marketing, profilazione e cessione a terzi?",
+    prompt: "Cosa succede se un contatto revoca il consenso?",
   },
   {
     icon: <Users className="w-4 h-4" />,
     label: "Record di altri Account",
-    prompt: "Cosa vedo di un contatto o di una trattativa di un altro Account?",
+    prompt: "Cosa vedo dei record di un altro Account?",
   },
   {
     icon: <FileText className="w-4 h-4" />,
@@ -160,32 +165,20 @@ export function VercelV0Chat() {
           signal: controller.signal,
         });
 
-        if (!res.ok || !res.body) {
+        if (!res.ok) {
           const err = await res.text().catch(() => "");
           throw new Error(err || `Errore ${res.status}`);
         }
 
-        const reader = res.body.getReader();
-        const decoder = new TextDecoder();
-        let acc = "";
-        for (;;) {
-          const { done, value: chunk } = await reader.read();
-          if (done) break;
-          acc += decoder.decode(chunk, { stream: true });
-          const snapshot = acc;
-          setMessages((prev) =>
-            prev.map((m) => (m.id === assistantMsg.id ? { ...m, content: snapshot } : m))
-          );
-        }
+        const answer = (await res.json()) as Answer;
+        setMessages((prev) => prev.map((m) => (m.id === assistantMsg.id ? { ...m, answer } : m)));
       } catch (err) {
         const msg =
           err instanceof DOMException && err.name === "AbortError"
             ? "_Risposta interrotta._"
             : `_${err instanceof Error ? err.message : "Errore imprevisto."}_`;
         setMessages((prev) =>
-          prev.map((m) =>
-            m.id === assistantMsg.id ? { ...m, content: (m.content + "\n\n" + msg).trim() } : m
-          )
+          prev.map((m) => (m.id === assistantMsg.id ? { ...m, content: msg } : m))
         );
       } finally {
         setBusy(false);
@@ -274,8 +267,8 @@ export function VercelV0Chat() {
                 Cosa vuoi sapere del CRM?
               </h1>
               <p className="text-sm text-muted-foreground">
-                Cerco nella Mappa del CRM di Mercury e ti riporto le regole così come sono scritte:
-                oggetti, fasi, Gmail e Calendar, form, placement e JobSignal.
+                Cerco nella Mappa del CRM di Mercury e ti do la regola in una riga, così com&apos;è scritta,
+                con il passaggio da cui viene.
               </p>
             </div>
             <Composer
@@ -302,7 +295,13 @@ export function VercelV0Chat() {
           <div className="w-full flex-1 flex flex-col">
             <div className="flex-1 space-y-4 pb-40">
               {messages.map((m) => (
-                <Bubble key={m.id} message={m} streaming={busy && m.role === "assistant" && !m.content} />
+                <Bubble
+                  key={m.id}
+                  message={m}
+                  streaming={busy && m.role === "assistant" && !m.content && !m.answer}
+                  onAsk={(p) => void send(p)}
+                  busy={busy}
+                />
               ))}
               <div ref={bottomRef} />
             </div>
@@ -319,7 +318,7 @@ export function VercelV0Chat() {
                   onStop={() => abortRef.current?.abort()}
                 />
                 <p className="text-center text-[11px] text-muted-foreground mt-2">
-                  Mercy cita la Mappa del CRM così com'è scritta, senza interpretarla. Per i dubbi, chiedi a Espedito.
+                  Mercy cita la Mappa del CRM così com&apos;è scritta, senza interpretarla. Per i dubbi, chiedi a Espedito.
                 </p>
               </div>
             </div>
@@ -418,7 +417,14 @@ function Composer({
   );
 }
 
-function Bubble({ message, streaming }: { message: ChatMessage; streaming: boolean }) {
+interface BubbleProps {
+  message: ChatMessage;
+  streaming: boolean;
+  onAsk: (prompt: string) => void;
+  busy: boolean;
+}
+
+function Bubble({ message, streaming, onAsk, busy }: BubbleProps) {
   const isUser = message.role === "user";
   return (
     <div className={cn("flex w-full", isUser ? "justify-end" : "justify-start")}>
@@ -429,10 +435,10 @@ function Bubble({ message, streaming }: { message: ChatMessage; streaming: boole
       )}
       <div
         className={cn(
-          "max-w-[85%] rounded-2xl px-4 py-3 text-sm leading-relaxed",
+          "rounded-2xl px-4 py-3 text-sm leading-relaxed",
           isUser
-            ? "bg-accent text-white rounded-br-md"
-            : "bg-surface border border-border text-foreground rounded-bl-md"
+            ? "max-w-[85%] bg-accent text-white rounded-br-md"
+            : "max-w-[92%] sm:max-w-[85%] bg-surface border border-border text-foreground rounded-bl-md"
         )}
       >
         {isUser ? (
@@ -441,6 +447,8 @@ function Bubble({ message, streaming }: { message: ChatMessage; streaming: boole
           <span className="inline-flex items-center gap-1 text-muted-foreground">
             <LoaderCircle className="w-3.5 h-3.5 animate-spin" /> Sto cercando nella Mappa…
           </span>
+        ) : message.answer ? (
+          <AnswerView answer={message.answer} onAsk={onAsk} busy={busy} />
         ) : (
           <div
             className="mercy-md"
@@ -448,6 +456,139 @@ function Bubble({ message, streaming }: { message: ChatMessage; streaming: boole
           />
         )}
       </div>
+    </div>
+  );
+}
+
+// The passage text with the answering sentence in evidence.
+function Highlighted({ text, highlight }: { text: string; highlight: string | null }) {
+  if (!highlight) return <>{text}</>;
+  const i = text.indexOf(highlight);
+  if (i < 0) return <>{text}</>;
+  return (
+    <>
+      {text.slice(0, i)}
+      <mark className="bg-accent/20 text-white rounded px-0.5">{highlight}</mark>
+      {text.slice(i + highlight.length)}
+    </>
+  );
+}
+
+function Where({ p }: { p: AnswerPassage }) {
+  return (
+    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
+      <span className="font-semibold text-foreground">{p.where}</span>
+      <span>
+        pagina {p.page} · {p.pageTitle}
+      </span>
+      <a
+        href={p.link}
+        target="_blank"
+        rel="noreferrer"
+        className="inline-flex items-center gap-1 text-accent hover:underline"
+      >
+        Apri nella Mappa <ExternalLink className="w-3 h-3" />
+      </a>
+    </div>
+  );
+}
+
+function AnswerView({ answer, onAsk, busy }: { answer: Answer; onAsk: (p: string) => void; busy: boolean }) {
+  const [open, setOpen] = useState<Set<number>>(new Set());
+  const toggle = (i: number) =>
+    setOpen((prev) => {
+      const next = new Set(prev);
+      if (next.has(i)) next.delete(i);
+      else next.add(i);
+      return next;
+    });
+
+  const simple = answer.kind === "greeting" || answer.kind === "thanks";
+
+  return (
+    <div className="space-y-3">
+      {answer.message && (
+        <div className="mercy-md" dangerouslySetInnerHTML={{ __html: renderMarkdown(answer.message) }} />
+      )}
+
+      {answer.short && (
+        <div>
+          <div className="text-[10px] uppercase tracking-wide text-accent font-semibold mb-1">
+            Risposta breve
+          </div>
+          <p className="text-[15px] leading-snug text-white font-medium">{answer.short}</p>
+        </div>
+      )}
+
+      {answer.passage && (
+        <div className="rounded-xl border border-border/70 bg-primary/40 px-3 py-2.5 space-y-1.5">
+          <Where p={answer.passage} />
+          <p className="text-[13px] leading-relaxed text-muted-foreground">
+            <Highlighted text={answer.passage.text} highlight={answer.passage.highlight} />
+          </p>
+        </div>
+      )}
+
+      {answer.seeAlso.length > 0 && (
+        <div>
+          <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
+            Vedi anche
+          </div>
+          <ul className="space-y-1">
+            {answer.seeAlso.map((s, i) => {
+              const isOpen = open.has(i);
+              return (
+                <li key={i} className="rounded-lg border border-border/60">
+                  <button
+                    type="button"
+                    onClick={() => toggle(i)}
+                    className="w-full flex items-start gap-1.5 text-left px-2.5 py-1.5 text-xs text-foreground hover:bg-surface-2 rounded-lg transition-colors"
+                  >
+                    {isOpen ? (
+                      <ChevronDown className="w-3.5 h-3.5 mt-0.5 shrink-0 text-accent" />
+                    ) : (
+                      <ChevronRight className="w-3.5 h-3.5 mt-0.5 shrink-0 text-accent" />
+                    )}
+                    <span className="min-w-0">
+                      <span className="font-medium">{s.where}</span>
+                      <span className="text-muted-foreground"> · p. {s.page}</span>
+                      {!isOpen && (
+                        <span className="block text-muted-foreground truncate">{s.text}</span>
+                      )}
+                    </span>
+                  </button>
+                  {isOpen && (
+                    <div className="px-2.5 pb-2.5 pl-7 space-y-1.5">
+                      <p className="text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
+                      <Where p={s} />
+                    </div>
+                  )}
+                </li>
+              );
+            })}
+          </ul>
+        </div>
+      )}
+
+      {answer.followUps.length > 0 && (
+        <div className="flex flex-wrap gap-1.5 pt-0.5">
+          {answer.followUps.map((f) => (
+            <button
+              key={f.prompt}
+              type="button"
+              disabled={busy}
+              onClick={() => onAsk(f.prompt)}
+              className="px-2.5 py-1 rounded-full border border-border text-xs text-muted-foreground hover:text-white hover:border-accent/60 transition-colors disabled:opacity-50"
+            >
+              {f.label}
+            </button>
+          ))}
+        </div>
+      )}
+
+      {!simple && (
+        <div className="text-[11px] text-muted-foreground italic">Fonte: {answer.source}.</div>
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 import { NextRequest } from "next/server";
-import { answer } from "@/lib/search";
-import { getIndex } from "@/lib/search";
+import { after } from "next/server";
+import { answer, getIndex } from "@/lib/search";
+import { logQuestion } from "@/lib/log";
 import { isAuthorized } from "@/lib/auth";
 
 export const runtime = "nodejs";
@@ -38,9 +39,23 @@ export async function POST(req: NextRequest) {
   }
 
   const { meta } = getIndex();
-  return new Response(answer(question), {
+  const a = answer(question);
+
+  // Log after the response is sent; the user never waits for it.
+  after(() =>
+    logQuestion({
+      question: a.question,
+      kind: a.kind,
+      score: a.score || null,
+      coverage: a.passage ? Math.round(a.coverage * 100) / 100 : null,
+      page: a.passage?.page ?? null,
+      section: a.passage?.where ?? null,
+      knowledge_seq: meta.seq,
+    })
+  );
+
+  return Response.json(a, {
     headers: {
-      "Content-Type": "text/plain; charset=utf-8",
       "Cache-Control": "no-store",
       "X-Mercy-Knowledge-Seq": String(meta.seq),
     },

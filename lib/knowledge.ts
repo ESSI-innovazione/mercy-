@@ -16,6 +16,8 @@ export interface KnowledgeMeta {
   documentDate: string;
   fetchedAt: string;
   pages: KnowledgePage[];
+  // Section title -> id attribute in the artifact page, for deep links (only some sections have one).
+  anchors?: Record<string, string>;
 }
 
 const KNOWLEDGE_DIR = path.join(process.cwd(), "knowledge");

@@ -7,9 +7,29 @@
   "documentDate": "06/10/2026",
   "fetchedAt": "2026-10-07",
   "pages": [
-    { "file": "01-mappa-del-crm.md", "title": "Mappa del CRM", "source": "index.html" },
-    { "file": "02-professione-e-profili-di-placement.md", "title": "Professione e profili di placement", "source": "placement.html" },
-    { "file": "03-mercury-per-jobsignal.md", "title": "Mercury per JobSignal", "source": "jobsignal.html" },
-    { "file": "04-guida-ai-form-dei-siti.md", "title": "Guida ai form dei siti", "source": "guida-form.html" }
-  ]
+    {
+      "file": "01-mappa-del-crm.md",
+      "title": "Mappa del CRM",
+      "source": "index.html"
+    },
+    {
+      "file": "02-professione-e-profili-di-placement.md",
+      "title": "Professione e profili di placement",
+      "source": "placement.html"
+    },
+    {
+      "file": "03-mercury-per-jobsignal.md",
+      "title": "Mercury per JobSignal",
+      "source": "jobsignal.html"
+    },
+    {
+      "file": "04-guida-ai-form-dei-siti.md",
+      "title": "Guida ai form dei siti",
+      "source": "guida-form.html"
+    }
+  ],
+  "anchors": {
+    "Gmail e Calendar": "gmail-e-calendar",
+    "Chi lavora e cosa vede": "chi-vede"
+  }
 }

@@ -339,15 +339,56 @@ export function naturalize(s: string, lead = true): string {
   return t;
 }
 
-// The reply for a search hit: the best sentence, plus the next one of the same
-// passage when the first is short, so the answer is complete but still brief.
-function replyFor(passage: Passage, sentence: string): string {
+// How much the person wants: a closed question ("chi può…", "quando…",
+// "posso…") gets one sentence, "come funziona…" or "spiegami…" the whole
+// explanation, anything else two or three sentences.
+export type Depth = "short" | "normal" | "long";
+
+export function depth(q: string): Depth {
+  const n = normalizeQuestion(q);
+  if (/\b(come funziona\w*|spiega\w*|spiegami|descrivi\w*|racconta\w*|dettagl\w*|tutto (su|quello)|cosa dice la mappa su|quali sono le regole|come si (gestisc\w*|costruisc\w*|usa\w*)|in che modo|passo per passo)\b/.test(n)) return "long";
+  if (/^(chi|a chi|quando|da quando|entro quando|fino a quando|quant[oaie]|dove|posso|si pu[oò]|e possibile|è possibile|esiste|c e|c'è|ce|serve|devo|bisogna|il|la|i|le|gli|un|una)\b/.test(n) && n.split(" ").length <= 9) return "short";
+  return "normal";
+}
+
+function normalizeQuestion(q: string): string {
+  return q
+    .normalize("NFD")
+    .replace(/[̀-ͯ]/g, "")
+    .toLowerCase()
+    .replace(/[^a-z0-9'àèéìòù ]+/g, " ")
+    .replace(/\s+/g, " ")
+    .trim();
+}
+
+// Trims a reply to its first sentences, never cutting inside one. Unlike
+// splitSentences this keeps short sentences ("Lunedì 19/10.") on their own.
+function firstSentences(text: string, max: number): string {
+  const parts = text.split(/(?<=[.!?])\s+(?=[A-ZÀ-Ý«"(\d])/).filter(Boolean);
+  return parts.slice(0, max).join(" ");
+}
+
+function trimReply(reply: string, d: Depth): string {
+  if (d === "short") return firstSentences(reply, 1);
+  if (d === "normal") return firstSentences(reply, 2);
+  return reply;
+}
+
+// The reply for a search hit: the best sentence, then as many following
+// sentences of the same passage as the depth asks for.
+function replyFor(passage: Passage, sentence: string, d: Depth): string {
   const parts = splitSentences(passage.text);
   const i = parts.indexOf(sentence);
   let out = naturalize(sentence);
-  if (i >= 0 && sentence.length < 90) {
-    const next = parts[i + 1];
-    if (next && next.length < 260) out += " " + naturalize(next, false);
+  if (i < 0) return out;
+  const budget = d === "short" ? 0 : d === "normal" ? 1 : 4;
+  let added = 0;
+  for (let j = i + 1; j < parts.length && added < budget; j++) {
+    const next = parts[j];
+    if (d === "normal" && sentence.length >= 90) break;
+    if (next.length > 300) break;
+    out += " " + naturalize(next, false);
+    added++;
   }
   return out;
 }
@@ -426,7 +467,7 @@ function sectionAnswer(label: string, idx: Index, base: Pick<Answer, "question" 
     ...base,
     kind: "hit",
     reply: sentences
-      .slice(0, 2)
+      .slice(0, 4)
       .map((s, i) => naturalize(s, i === 0))
       .join(" "),
     short: sentences[0] ?? null,
@@ -485,6 +526,7 @@ export function answer(question: string): Answer {
     const a = sectionAnswer(sectionReq[1], idx, base);
     if (a) return a;
   }
+  const d = depth(q);
 
   const qTokens = tokenize(q);
   const own = uniq(qTokens);
@@ -498,7 +540,7 @@ export function answer(question: string): Answer {
     return {
       ...base,
       kind: "faq",
-      reply: faqHit.entry.reply,
+      reply: trimReply(faqHit.entry.reply, d),
       short: faqHit.entry.answer,
       passage: toAnswerPassage(p, meta, faqHit.entry.answer),
       seeAlso: others.map((x) => toAnswerPassage(x, meta, null)),
@@ -556,7 +598,7 @@ export function answer(question: string): Answer {
   return {
     ...base,
     kind: weak ? "weak" : "hit",
-    reply: weak ? weakMessage : replyFor(chosen, sentence),
+    reply: weak ? weakMessage : replyFor(chosen, sentence, d),
     short: weak ? null : sentence,
     passage: toAnswerPassage(chosen, meta, sentence),
     seeAlso: others.map((x) => toAnswerPassage(x, meta, null)),

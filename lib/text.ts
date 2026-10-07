@@ -17,7 +17,7 @@ const STOPWORDS = new Set(
    cos cose qual quanto quanti quante quanta funziona funzionano significa intende vuol
    spiega spiegami dimmi sapere capire capisco informazioni info riguardo circa tipo esempio
    qualcuno qualcosa nessuno niente nulla davvero proprio invece però pero quindi allora
-   mercy mappa crm`
+   mercy mappa crm mercury`
     .split(/\s+/)
     .filter(Boolean)
 );

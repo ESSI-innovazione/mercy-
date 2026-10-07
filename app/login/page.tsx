@@ -1,38 +1,8 @@
-"use client";
+import { ALLOWED_DOMAIN, passwordRequired } from "@/lib/auth";
+import { LoginClient } from "./login-client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { MercuryLogin } from "@/components/ui/mercury-login";
-
-const DOMAIN = "timevision.it";
+export const dynamic = "force-dynamic";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const [error, setError] = useState<string | null>(null);
-  const [busy, setBusy] = useState(false);
-
-  async function submit(email: string, password: string) {
-    setBusy(true);
-    setError(null);
-    try {
-      const res = await fetch("/api/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email, password }),
-      });
-      const data = (await res.json()) as { ok: boolean; error?: string };
-      if (data.ok) {
-        router.replace("/");
-        router.refresh();
-      } else {
-        setError(data.error ?? "Accesso negato.");
-      }
-    } catch {
-      setError("Errore di rete.");
-    } finally {
-      setBusy(false);
-    }
-  }
-
-  return <MercuryLogin onSubmit={submit} error={error} busy={busy} domain={DOMAIN} />;
+  return <LoginClient domain={ALLOWED_DOMAIN} requirePassword={passwordRequired()} />;
 }

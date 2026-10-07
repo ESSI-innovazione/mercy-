@@ -26,9 +26,17 @@ export interface MercuryLoginProps {
   error?: string | null;
   busy?: boolean;
   domain: string;
+  /** False in mock-up mode (no APP_PASSWORD yet): only the email is asked. */
+  requirePassword?: boolean;
 }
 
-export function MercuryLogin({ onSubmit, error, busy = false, domain }: MercuryLoginProps) {
+export function MercuryLogin({
+  onSubmit,
+  error,
+  busy = false,
+  domain,
+  requirePassword = true,
+}: MercuryLoginProps) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const blobRefs = useRef<(HTMLDivElement | null)[]>([]);
@@ -49,7 +57,8 @@ export function MercuryLogin({ onSubmit, error, busy = false, domain }: MercuryL
     return () => document.removeEventListener("mousemove", handleMouseMove);
   }, []);
 
-  const canSubmit = !busy && email.trim().length > 0 && password.length > 0;
+  const canSubmit =
+    !busy && email.trim().length > 0 && (!requirePassword || password.length > 0);
 
   return (
     <div
@@ -143,7 +152,7 @@ export function MercuryLogin({ onSubmit, error, busy = false, domain }: MercuryL
             <div className="mercury-glow absolute bottom-0 left-0 h-[2px] w-0 bg-accent peer-focus:w-full" />
           </div>
 
-          <div className="mercury-field relative mb-8">
+          <div className={cn("mercury-field relative mb-8", !requirePassword && "hidden")}>
             <label
               htmlFor="mercy-password"
               className={cn(mono.className, "mb-3 block text-[11px] uppercase text-muted-foreground")}
@@ -155,7 +164,7 @@ export function MercuryLogin({ onSubmit, error, busy = false, domain }: MercuryL
               name="password"
               type="password"
               autoComplete="current-password"
-              required
+              required={requirePassword}
               placeholder="••••••••"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
@@ -196,7 +205,7 @@ export function MercuryLogin({ onSubmit, error, busy = false, domain }: MercuryL
           )}
         >
           <span>Solo account @{domain}</span>
-          <span>Mappa del CRM · Innovazione</span>
+          <span>{requirePassword ? "Mappa del CRM · Innovazione" : "Anteprima · senza password"}</span>
         </footer>
       </main>
     </div>

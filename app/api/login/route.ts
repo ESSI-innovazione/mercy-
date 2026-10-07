@@ -2,25 +2,15 @@ import { NextRequest, NextResponse } from "next/server";
 import {
   ALLOWED_DOMAIN,
   AUTH_COOKIE,
-  gateEnabled,
-  gateMisconfigured,
   isCompanyEmail,
   normalizeEmail,
+  passwordRequired,
   tokenFor,
 } from "@/lib/auth";
 
 export const runtime = "nodejs";
 
 export async function POST(req: NextRequest) {
-  if (!gateEnabled()) {
-    return NextResponse.json({ ok: true });
-  }
-  if (gateMisconfigured()) {
-    return NextResponse.json(
-      { ok: false, error: "APP_PASSWORD non è impostata su Vercel: nessuno può entrare." },
-      { status: 503 }
-    );
-  }
   let email = "";
   let password = "";
   try {
@@ -37,12 +27,12 @@ export async function POST(req: NextRequest) {
       { status: 403 }
     );
   }
-  if (password !== process.env.APP_PASSWORD) {
+  if (passwordRequired() && password !== process.env.APP_PASSWORD) {
     return NextResponse.json({ ok: false, error: "Password errata." }, { status: 401 });
   }
 
   const res = NextResponse.json({ ok: true, email });
-  res.cookies.set(AUTH_COOKIE, await tokenFor(email, password), {
+  res.cookies.set(AUTH_COOKIE, await tokenFor(email), {
     httpOnly: true,
     sameSite: "lax",
     secure: process.env.NODE_ENV === "production",

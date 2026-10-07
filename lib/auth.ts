@@ -1,10 +1,21 @@
 import { cookies } from "next/headers";
 
-// Gate for colleagues: a @timevision.it address plus the shared password.
+// Gate for colleagues: a @timevision.it address, plus the shared password once
+// APP_PASSWORD is set. Without APP_PASSWORD the login is a mock-up: the page is
+// shown, the domain is checked, no password is asked.
 // Checked inside pages and route handlers (no middleware).
 
 export const AUTH_COOKIE = "mercy_auth";
 export const ALLOWED_DOMAIN = "timevision.it";
+
+/** True once APP_PASSWORD is configured; false in mock-up mode. */
+export function passwordRequired(): boolean {
+  return Boolean(process.env.APP_PASSWORD);
+}
+
+function secret(): string {
+  return process.env.APP_PASSWORD || "mock";
+}
 
 export function normalizeEmail(raw: string): string {
   return raw.trim().toLowerCase();
@@ -29,25 +40,14 @@ async function sha256Hex(input: string): Promise<string> {
     .join("");
 }
 
-/** Cookie value: "<email>.<sha256(mercy:<email>:<password>)>". */
-export async function tokenFor(email: string, password: string): Promise<string> {
+/** Cookie value: "<email>.<sha256(mercy:<email>:<secret>)>". */
+export async function tokenFor(email: string): Promise<string> {
   const e = normalizeEmail(email);
-  return `${e}.${await sha256Hex(`mercy:${e}:${password}`)}`;
-}
-
-/** The gate is off only in local development without APP_PASSWORD; never in production. */
-export function gateEnabled(): boolean {
-  return Boolean(process.env.APP_PASSWORD) || process.env.NODE_ENV === "production";
-}
-
-/** True when the deployment is missing APP_PASSWORD and therefore nobody can sign in. */
-export function gateMisconfigured(): boolean {
-  return gateEnabled() && !process.env.APP_PASSWORD;
+  return `${e}.${await sha256Hex(`mercy:${e}:${secret()}`)}`;
 }
 
 /** Email of the signed-in colleague, or null when the cookie is missing or invalid. */
 export async function currentUser(): Promise<string | null> {
-  if (gateMisconfigured()) return null;
   const store = await cookies();
   const got = store.get(AUTH_COOKIE)?.value;
   if (!got) return null;
@@ -55,12 +55,10 @@ export async function currentUser(): Promise<string | null> {
   if (dot <= 0) return null;
   const email = got.slice(0, dot);
   if (!isCompanyEmail(email)) return null;
-  const expected = await tokenFor(email, process.env.APP_PASSWORD as string);
-  return got === expected ? email : null;
+  return got === (await tokenFor(email)) ? email : null;
 }
 
-/** True when the gate is off, or the request carries a valid cookie. */
+/** True when the request carries a valid cookie. */
 export async function isAuthorized(): Promise<boolean> {
-  if (!gateEnabled()) return true;
   return (await currentUser()) !== null;
 }

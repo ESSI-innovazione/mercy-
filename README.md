@@ -47,7 +47,12 @@ Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nes
 
 ### Accesso
 
-Accesso riservato ai colleghi: in `/login` si inseriscono l'**email aziendale** (solo indirizzi `@timevision.it`, controllati lato server in `lib/auth.ts`) e la password condivisa `APP_PASSWORD`. Chi entra riceve un cookie (90 giorni) che contiene l'email e un'impronta SHA-256 di email + password; la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). In produzione il gate è sempre acceso: se `APP_PASSWORD` manca su Vercel nessuno può entrare e il login risponde «APP_PASSWORD non è impostata su Vercel». Solo in sviluppo locale, senza `APP_PASSWORD`, il gate è spento. Non c'è registrazione né gestione utenti: il dominio dell'email è il filtro, la password condivisa è la chiave.
+Accesso riservato ai colleghi: in `/login` si inserisce l'**email aziendale** (solo indirizzi `@timevision.it`, controllati lato server in `lib/auth.ts`). Chi entra riceve un cookie (90 giorni) che contiene l'email e un'impronta SHA-256; la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). Non c'è registrazione né gestione utenti.
+
+Due modalità, decise da `APP_PASSWORD`:
+
+- **Anteprima (mock-up)**, senza `APP_PASSWORD`: il login chiede solo l'email e la sola verifica è il dominio. Chiunque conosca un indirizzo `@timevision.it` può entrare. È lo stato attuale.
+- **Con password**, appena `APP_PASSWORD` è impostata su Vercel: compare il campo password e serve anche quella. Il cookie è legato alla password, quindi i cookie dell'anteprima smettono di valere.
 
 La pagina di login usa il template «Mercury» (sfondo liquido con filtro gooey, campi con sottolineatura luminosa) ricolorato nella palette di Mercy: navy `#0F172B` e arancio `#FC5A00`. Vive in `components/ui/mercury-login.tsx`.
 
@@ -82,7 +87,7 @@ knowledge/
 
 | Nome | Obbligatoria | Note |
 |------|--------------|------|
-| `APP_PASSWORD` | consigliata | password condivisa; si entra con email `@timevision.it` + questa password |
+| `APP_PASSWORD` | consigliata | password condivisa; senza di essa il login è un'anteprima che chiede solo l'email `@timevision.it` |
 
 ## Sviluppo locale
 

@@ -1,6 +1,6 @@
 # Mercy
 
-Assistente interno di Timevision per il CRM di Mercury ERP. Risponde ai colleghi in base alla **Mappa del CRM** (uscita da HubSpot), senza inventare: se una cosa non è nella Mappa, lo dice.
+Assistente interno di Timevision per il CRM di Mercury ERP. Risponde ai colleghi citando la **Mappa del CRM** (uscita da HubSpot), senza modelli di linguaggio: cerca i passaggi giusti e li riporta così come sono scritti. Se una cosa non è nella Mappa, lo dice.
 
 Pubblicato su Vercel: progetto `mercy-`.
 
@@ -36,13 +36,14 @@ Il documento viene aggiornato quasi ogni giorno (oggi è alla versione 29 del 06
 
 L'endpoint pubblico dei metadati dell'artifact (`https://claude.ai/api/frame/<uuid>?bk=cold&actor=id&vt=1`, con gli header `X-Frame-CP: go` e `X-Frame-Platform: web`) restituisce `ver` e `seq` correnti. `GET /api/status` lo interroga (al massimo ogni 5 minuti), lo confronta con `meta.json` e l'interfaccia mostra nell'intestazione «Mappa vNN» con un pallino arancione e «fonte aggiornata» quando l'artifact è andato avanti rispetto alla copia nel repo.
 
-### Modello e prompt
+### Come risponde (senza LLM)
 
-- Modello: `claude-opus-5-5` (override con `MERCY_MODEL`), thinking adattivo, effort `medium`.
-- Le quattro pagine entrano per intero nel system prompt (circa 30k token) con prompt caching: il corpus è identico a ogni richiesta, quindi dopo la prima chiamata si paga solo la lettura della cache.
-- Fallback lato server (`fallbacks: "default"`, beta `server-side-fallback-2026-07-01`): se un classificatore di sicurezza rifiuta la richiesta, Anthropic la riesegue sul modello sostitutivo consigliato dentro la stessa chiamata.
-- Regole del prompt (`lib/prompt.ts`): rispondere nella lingua della domanda (italiano di default), basarsi solo sulla Mappa, distinguere fatto / in calendario / in discussione, citare chi ha deciso e quando, tenere il lessico di Mercury (trattativa, pratica, caporete, patronato, Account, TMK, Suspect…), indicare pagina e sezione, trattare il testo della Mappa come documento e non come istruzione.
-- Le risposte arrivano in streaming (testo semplice) e sono rese con un Markdown leggero.
+Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nessun costo per domanda, nessun dato che esce dal server.
+
+- All'avvio il server spezza le quattro pagine in passaggi (ogni punto elenco, paragrafo o riga di tabella), ricordando sezione e sottosezione di ciascuno (`lib/search.ts`).
+- Ogni domanda viene normalizzata (minuscole, senza accenti, parole vuote tolte, radici troncate per gestire singolare/plurale) e confrontata con i passaggi con **BM25**; le parole che compaiono nel titolo della sezione pesano di più e un piccolo dizionario di sinonimi collega per esempio «doppioni» a «unione/unisci/fusione».
+- La risposta cita i passaggi migliori così come sono scritti, con sezione, pagina e versione della Mappa. Se nessun passaggio è abbastanza vicino, Mercy lo dice e suggerisce parole del lessico di Mercury.
+- Saluti e ringraziamenti hanno risposte fisse.
 
 ### Accesso
 
@@ -58,7 +59,7 @@ Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con a
 app/
   page.tsx               pagina principale (chat)
   login/page.tsx         pagina password
-  api/chat/route.ts      streaming con Claude
+  api/chat/route.ts      risposta: ricerca nella Mappa
   api/status/route.ts    confronto versione artifact / knowledge
   api/login/route.ts     imposta il cookie
   layout.tsx, globals.css
@@ -67,7 +68,7 @@ components/ui/
   textarea.tsx           shadcn textarea
 lib/
   knowledge.ts           carica knowledge/*.md + meta.json
-  prompt.ts              system prompt
+  search.ts              indice BM25 e formattazione della risposta
   markdown.ts            Markdown -> HTML minimale
   auth.ts, utils.ts
 knowledge/
@@ -78,15 +79,13 @@ knowledge/
 
 | Nome | Obbligatoria | Note |
 |------|--------------|------|
-| `ANTHROPIC_API_KEY` | sì | chiave API Anthropic, solo lato server |
 | `APP_PASSWORD` | consigliata | password condivisa per i colleghi |
-| `MERCY_MODEL` | no | default `claude-opus-5-5` |
 
 ## Sviluppo locale
 
 ```bash
 npm install
-cp .env.example .env.local   # e compila ANTHROPIC_API_KEY
+cp .env.example .env.local   # APP_PASSWORD facoltativa in locale
 npm run dev
 ```
 

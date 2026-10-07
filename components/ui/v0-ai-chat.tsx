@@ -222,7 +222,7 @@ export function VercelV0Chat() {
           <div className="leading-tight">
             <div className="font-semibold text-white">Mercy</div>
             <div className="text-[11px] text-muted-foreground">
-              Assistente per il CRM di Mercury
+              Cerca nella Mappa del CRM
             </div>
           </div>
         </div>
@@ -274,8 +274,8 @@ export function VercelV0Chat() {
                 Cosa vuoi sapere del CRM?
               </h1>
               <p className="text-sm text-muted-foreground">
-                Rispondo in base alla Mappa del CRM di Mercury: oggetti, regole, fasi, Gmail e
-                Calendar, form, placement e JobSignal.
+                Cerco nella Mappa del CRM di Mercury e ti riporto le regole così come sono scritte:
+                oggetti, fasi, Gmail e Calendar, form, placement e JobSignal.
               </p>
             </div>
             <Composer
@@ -319,7 +319,7 @@ export function VercelV0Chat() {
                   onStop={() => abortRef.current?.abort()}
                 />
                 <p className="text-center text-[11px] text-muted-foreground mt-2">
-                  Mercy risponde solo in base alla Mappa del CRM. Verifica le decisioni recenti con Espedito.
+                  Mercy cita la Mappa del CRM così com'è scritta, senza interpretarla. Per i dubbi, chiedi a Espedito.
                 </p>
               </div>
             </div>
@@ -439,7 +439,7 @@ function Bubble({ message, streaming }: { message: ChatMessage; streaming: boole
           <span className="whitespace-pre-wrap">{message.content}</span>
         ) : streaming ? (
           <span className="inline-flex items-center gap-1 text-muted-foreground">
-            <LoaderCircle className="w-3.5 h-3.5 animate-spin" /> Sto leggendo la Mappa…
+            <LoaderCircle className="w-3.5 h-3.5 animate-spin" /> Sto cercando nella Mappa…
           </span>
         ) : (
           <div

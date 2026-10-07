@@ -47,7 +47,9 @@ Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nes
 
 ### Accesso
 
-Gate a password condivisa: `APP_PASSWORD`. Chi la inserisce in `/login` riceve un cookie (90 giorni); la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). Senza `APP_PASSWORD` il gate è spento (solo per sviluppo locale). Non c'è registrazione né gestione utenti: è pensato per un gruppo interno.
+Accesso riservato ai colleghi: in `/login` si inseriscono l'**email aziendale** (solo indirizzi `@timevision.it`, controllati lato server in `lib/auth.ts`) e la password condivisa `APP_PASSWORD`. Chi entra riceve un cookie (90 giorni) che contiene l'email e un'impronta SHA-256 di email + password; la pagina e le route API controllano il cookie (nessun middleware: su Vercel il middleware Node falliva al caricamento). Senza `APP_PASSWORD` il gate è spento (solo per sviluppo locale). Non c'è registrazione né gestione utenti: il dominio dell'email è il filtro, la password condivisa è la chiave.
+
+La pagina di login usa il template «Mercury» (sfondo liquido con filtro gooey, campi con sottolineatura luminosa) ricolorato nella palette di Mercy: navy `#0F172B` e arancio `#FC5A00`. Vive in `components/ui/mercury-login.tsx`.
 
 ### Interfaccia
 
@@ -58,13 +60,14 @@ Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con a
 ```
 app/
   page.tsx               pagina principale (chat)
-  login/page.tsx         pagina password
+  login/page.tsx         pagina di accesso (email @timevision.it + password)
   api/chat/route.ts      risposta: ricerca nella Mappa
   api/status/route.ts    confronto versione artifact / knowledge
   api/login/route.ts     imposta il cookie
   layout.tsx, globals.css
 components/ui/
   v0-ai-chat.tsx         componente chat (template v0 adattato a Mercy)
+  mercury-login.tsx      pagina di accesso (template Mercury, palette Mercy)
   textarea.tsx           shadcn textarea
 lib/
   knowledge.ts           carica knowledge/*.md + meta.json
@@ -79,7 +82,7 @@ knowledge/
 
 | Nome | Obbligatoria | Note |
 |------|--------------|------|
-| `APP_PASSWORD` | consigliata | password condivisa per i colleghi |
+| `APP_PASSWORD` | consigliata | password condivisa; si entra con email `@timevision.it` + questa password |
 
 ## Sviluppo locale
 

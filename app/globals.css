@@ -71,3 +71,69 @@ body {
 ::-webkit-scrollbar-track {
   background: transparent;
 }
+
+/* Login "Mercury" liquid background (components/ui/mercury-login.tsx), Mercy palette */
+.mercury-stage {
+  filter: url("#mercy-gooey");
+  opacity: 0.55;
+}
+.mercury-blob {
+  background: linear-gradient(135deg, #fc5a00, #ff8f40 60%, #243556);
+  filter: blur(22px);
+  animation: mercy-float 20s infinite alternate ease-in-out;
+  box-shadow:
+    inset -10px -10px 20px rgba(7, 11, 21, 0.6),
+    10px 10px 30px rgba(252, 90, 0, 0.25);
+  transition: margin 0.1s ease-out;
+}
+@keyframes mercy-float {
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  33% {
+    transform: translate(10vw, 20vh) scale(1.2);
+  }
+  66% {
+    transform: translate(-5vw, 10vh) scale(0.8);
+  }
+  100% {
+    transform: translate(5vw, -10vh) scale(1.1);
+  }
+}
+.mercury-field {
+  transition: transform 0.4s cubic-bezier(0.2, 1, 0.3, 1);
+}
+.mercury-field:focus-within {
+  transform: translateX(10px);
+}
+.mercury-field input {
+  transition: border-color 0.4s;
+}
+.mercury-field input:focus {
+  border-color: rgba(252, 90, 0, 0.5);
+}
+.mercury-glow {
+  transition: width 0.6s cubic-bezier(0.2, 1, 0.3, 1);
+  box-shadow: 0 0 15px #fc5a00;
+}
+.mercury-submit {
+  filter: url("#mercy-gooey");
+}
+.mercury-btn {
+  transition: letter-spacing 0.3s;
+}
+.mercury-btn:not(:disabled):hover {
+  letter-spacing: 4px;
+}
+.mercury-drop {
+  transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.mercury-submit:hover .mercury-drop {
+  transform: translate(-50%, -50%) scale(1.05, 1.2);
+  filter: brightness(1.15);
+}
+@media (prefers-reduced-motion: reduce) {
+  .mercury-blob {
+    animation: none;
+  }
+}

@@ -40,7 +40,10 @@ L'endpoint pubblico dei metadati dell'artifact (`https://claude.ai/api/frame/<uu
 
 Mercy non usa modelli di linguaggio né servizi esterni: nessuna chiave API, nessun costo per domanda, nessun dato che esce dal server.
 
-L'obiettivo è che chi chiede trovi la soluzione in fretta: una riga di risposta, il passaggio da cui viene, e onestà quando la Mappa non risponde.
+L'obiettivo è che chi chiede abbia la soluzione subito: una risposta diretta, in italiano naturale, senza dover andare a cercare il testo nella Mappa, e onestà quando la Mappa non risponde. Chi legge vede solo la risposta e le domande collegate; sezione, passaggio e punteggio restano nel JSON dell'API e nel registro, per chi mantiene Mercy.
+
+- Le **FAQ** hanno una risposta scritta a mano in tono naturale (`r`) e la frase della Mappa da cui viene (`a`): la frase serve a verificare all'avvio che la risposta sia ancora vera; se la Mappa cambia e la frase sparisce, la FAQ si spegne da sola.
+- Le frasi trovate dalla **ricerca** vengono ripulite prima di essere mostrate (`naturalize` in `lib/search.ts`): via i riferimenti «(decisione del …)», via l'etichetta «Argomento:» che apre molti punti, minuscole al posto delle maiuscole delle tappe, maiuscola e punto finale. Se la frase è corta, segue anche la successiva dello stesso passaggio.
 
 - All'avvio il server spezza le quattro pagine in passaggi (ogni punto elenco, paragrafo o riga di tabella), ricordando sezione e sottosezione di ciascuno (`lib/search.ts`).
 - **FAQ curate** (`knowledge/faq.json`): per le domande più frequenti ci sono varianti scritte a mano con la frase esatta della Mappa che risponde. Si controllano prima della ricerca. Ogni frase viene cercata nel testo della Mappa all'avvio: se una versione nuova della Mappa non la contiene più, la voce si spegne da sola (con un avviso nel log) e non si mostra mai una citazione vecchia.
@@ -75,7 +78,7 @@ La pagina di login usa il template «Mercury» (sfondo liquido con filtro gooey,
 
 ### Interfaccia
 
-Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con auto-ridimensionamento, suggerimenti rapidi (passaggio netto, fasi del partner, barra di Gmail, doppioni, consensi, record di altri Account, form dei siti), poi la conversazione con composer fisso in basso. Ogni risposta mostra: «Risposta breve», il passaggio con la frase evidenziata e il link alla Mappa, «Vedi anche» richiudibile, chip con le domande collegate, fonte e versione. Colori: primario `#0F172B` (navy), secondario `#FC5A00` (arancio).
+Pagina unica in stile v0 (shadcn + Tailwind + TypeScript): titolo, casella con auto-ridimensionamento, suggerimenti rapidi (passaggio netto, fasi del partner, barra di Gmail, doppioni, consensi, record di altri Account, form dei siti), poi la conversazione con composer fisso in basso. Ogni risposta mostra solo il testo della risposta, le chip con le domande collegate e, in piccolo, la versione della Mappa. Colori: primario `#0F172B` (navy), secondario `#FC5A00` (arancio).
 
 ## Struttura
 

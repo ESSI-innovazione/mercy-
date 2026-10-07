@@ -4,13 +4,10 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
-import type { Answer, AnswerPassage } from "@/lib/search";
+import type { Answer } from "@/lib/search";
 import {
   ArrowUpIcon,
   CalendarClock,
-  ChevronDown,
-  ChevronRight,
-  ExternalLink,
   FileText,
   GitMerge,
   LoaderCircle,
@@ -267,8 +264,7 @@ export function VercelV0Chat() {
                 Cosa vuoi sapere del CRM?
               </h1>
               <p className="text-sm text-muted-foreground">
-                Cerco nella Mappa del CRM di Mercury e ti do la regola in una riga, così com&apos;è scritta,
-                con il passaggio da cui viene.
+                Chiedimi una regola del CRM di Mercury: ti rispondo in due righe, con quello che dice la Mappa.
               </p>
             </div>
             <Composer
@@ -318,7 +314,7 @@ export function VercelV0Chat() {
                   onStop={() => abortRef.current?.abort()}
                 />
                 <p className="text-center text-[11px] text-muted-foreground mt-2">
-                  Mercy cita la Mappa del CRM così com&apos;è scritta, senza interpretarla. Per i dubbi, chiedi a Espedito.
+                  Mercy risponde con le regole della Mappa del CRM. Per i dubbi, chiedi a Espedito.
                 </p>
               </div>
             </div>
@@ -460,115 +456,12 @@ function Bubble({ message, streaming, onAsk, busy }: BubbleProps) {
   );
 }
 
-// The passage text with the answering sentence in evidence.
-function Highlighted({ text, highlight }: { text: string; highlight: string | null }) {
-  if (!highlight) return <>{text}</>;
-  const i = text.indexOf(highlight);
-  if (i < 0) return <>{text}</>;
-  return (
-    <>
-      {text.slice(0, i)}
-      <mark className="bg-accent/20 text-white rounded px-0.5">{highlight}</mark>
-      {text.slice(i + highlight.length)}
-    </>
-  );
-}
-
-function Where({ p }: { p: AnswerPassage }) {
-  return (
-    <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5 text-[11px] text-muted-foreground">
-      <span className="font-semibold text-foreground">{p.where}</span>
-      <span>
-        pagina {p.page} · {p.pageTitle}
-      </span>
-      <a
-        href={p.link}
-        target="_blank"
-        rel="noreferrer"
-        className="inline-flex items-center gap-1 text-accent hover:underline"
-      >
-        Apri nella Mappa <ExternalLink className="w-3 h-3" />
-      </a>
-    </div>
-  );
-}
-
+// Just the answer, written as a reply, then the questions one usually asks next.
 function AnswerView({ answer, onAsk, busy }: { answer: Answer; onAsk: (p: string) => void; busy: boolean }) {
-  const [open, setOpen] = useState<Set<number>>(new Set());
-  const toggle = (i: number) =>
-    setOpen((prev) => {
-      const next = new Set(prev);
-      if (next.has(i)) next.delete(i);
-      else next.add(i);
-      return next;
-    });
-
   const simple = answer.kind === "greeting" || answer.kind === "thanks";
-
   return (
-    <div className="space-y-3">
-      {answer.message && (
-        <div className="mercy-md" dangerouslySetInnerHTML={{ __html: renderMarkdown(answer.message) }} />
-      )}
-
-      {answer.short && (
-        <div>
-          <div className="text-[10px] uppercase tracking-wide text-accent font-semibold mb-1">
-            Risposta breve
-          </div>
-          <p className="text-[15px] leading-snug text-white font-medium">{answer.short}</p>
-        </div>
-      )}
-
-      {answer.passage && (
-        <div className="rounded-xl border border-border/70 bg-primary/40 px-3 py-2.5 space-y-1.5">
-          <Where p={answer.passage} />
-          <p className="text-[13px] leading-relaxed text-muted-foreground">
-            <Highlighted text={answer.passage.text} highlight={answer.passage.highlight} />
-          </p>
-        </div>
-      )}
-
-      {answer.seeAlso.length > 0 && (
-        <div>
-          <div className="text-[10px] uppercase tracking-wide text-muted-foreground font-semibold mb-1">
-            Vedi anche
-          </div>
-          <ul className="space-y-1">
-            {answer.seeAlso.map((s, i) => {
-              const isOpen = open.has(i);
-              return (
-                <li key={i} className="rounded-lg border border-border/60">
-                  <button
-                    type="button"
-                    onClick={() => toggle(i)}
-                    className="w-full flex items-start gap-1.5 text-left px-2.5 py-1.5 text-xs text-foreground hover:bg-surface-2 rounded-lg transition-colors"
-                  >
-                    {isOpen ? (
-                      <ChevronDown className="w-3.5 h-3.5 mt-0.5 shrink-0 text-accent" />
-                    ) : (
-                      <ChevronRight className="w-3.5 h-3.5 mt-0.5 shrink-0 text-accent" />
-                    )}
-                    <span className="min-w-0">
-                      <span className="font-medium">{s.where}</span>
-                      <span className="text-muted-foreground"> · p. {s.page}</span>
-                      {!isOpen && (
-                        <span className="block text-muted-foreground truncate">{s.text}</span>
-                      )}
-                    </span>
-                  </button>
-                  {isOpen && (
-                    <div className="px-2.5 pb-2.5 pl-7 space-y-1.5">
-                      <p className="text-[13px] leading-relaxed text-muted-foreground">{s.text}</p>
-                      <Where p={s} />
-                    </div>
-                  )}
-                </li>
-              );
-            })}
-          </ul>
-        </div>
-      )}
+    <div className="space-y-2.5">
+      <p className="text-[15px] leading-relaxed text-white whitespace-pre-wrap">{answer.reply}</p>
 
       {answer.followUps.length > 0 && (
         <div className="flex flex-wrap gap-1.5 pt-0.5">
@@ -587,7 +480,9 @@ function AnswerView({ answer, onAsk, busy }: { answer: Answer; onAsk: (p: string
       )}
 
       {!simple && (
-        <div className="text-[11px] text-muted-foreground italic">Fonte: {answer.source}.</div>
+        <div className="text-[10px] text-muted-foreground/70" title={answer.source}>
+          Mappa del CRM v{answer.source.replace(/^.*versione\s+(\S+).*$/, "$1")}
+        </div>
       )}
     </div>
   );

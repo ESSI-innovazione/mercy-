@@ -1,9 +1,9 @@
-// Curated FAQ: hand-written question variants whose answer is one sentence of
-// the Mappa, quoted verbatim (knowledge/faq.json). Checked before the search
-// runs, so the most common questions get a one-line answer every time.
-// Each entry is resolved at load to the passage that contains its sentence;
-// an entry whose sentence is no longer in the Mappa is dropped with a warning,
-// so a knowledge refresh never shows a stale quote.
+// Curated FAQ (knowledge/faq.json): hand-written question variants, a reply
+// written in natural Italian, and the sentence of the Mappa the reply comes
+// from. Checked before the search runs, so the most common questions get a
+// direct answer every time. At load each entry is tied to the passage that
+// contains its sentence; an entry whose sentence is no longer in the Mappa is
+// dropped with a warning, so a knowledge refresh never serves a stale reply.
 
 import fs from "node:fs";
 import path from "node:path";
@@ -12,13 +12,15 @@ import type { Passage } from "./search";
 
 export interface FaqEntry {
   questions: string[];
-  answer: string;
+  reply: string; // what the user reads
+  answer: string; // the Mappa sentence it is based on, verbatim
   passage: Passage;
   tokens: string[][]; // per question variant
 }
 
 interface RawEntry {
   q: string[];
+  r: string;
   a: string;
 }
 
@@ -42,6 +44,7 @@ export function loadFaq(passages: Passage[]): FaqEntry[] {
     }
     out.push({
       questions: e.q,
+      reply: squash(e.r),
       answer: a,
       passage,
       tokens: e.q.map((q) => uniq(tokenize(q))),

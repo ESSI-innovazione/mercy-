@@ -79,6 +79,8 @@ function splitPage(md: string, page: number, pageTitle: string, startId: number)
     }
     if (clean.length < 40) return;
     if (looksLikeDiagramLabels(clean)) return;
+    // Colour legends of the diagrams and the sources footer are not rules.
+    if (/^(Pallino|Verde|Viola|Arancio|Giallo|Tratteggio|Bordo|Le frecce|Catalogo a sinistra|Google a sinistra|Fonte:|Fonti:)/.test(clean)) return;
     const tokens = tokenize(clean);
     if (tokens.length < 4) return;
     out.push({
@@ -258,7 +260,7 @@ function bestSentence(
       if (score <= 0) continue;
       const ownHits = ownSeen.size;
       score *= 1 + 0.3 * ownHits;
-      if (cue && cue.test(s)) score *= 1.7;
+      if (cue && cue.test(naturalize(s))) score *= 1.7;
       if (s.length < 40) score *= 0.7;
       else if (s.length > 250) score *= 0.8;
       // Tie the sentence to how good its passage was overall.
@@ -295,7 +297,8 @@ export type AnswerKind = "greeting" | "thanks" | "faq" | "hit" | "weak" | "none"
 export interface Answer {
   kind: AnswerKind;
   question: string;
-  short: string | null; // the one sentence that answers
+  reply: string; // what the user reads: a direct answer in natural Italian
+  short: string | null; // the one sentence of the Mappa that answers
   passage: AnswerPassage | null; // its context
   seeAlso: AnswerPassage[]; // other relevant passages, collapsed in the UI
   followUps: FollowUp[];
@@ -304,6 +307,49 @@ export interface Answer {
   artifactUrl: string;
   score: number;
   coverage: number;
+}
+
+// ---------- natural phrasing (no LLM) ----------
+
+const ACRONYMS = new Set(
+  "TMK CRM ERP CSV PDF ACP SPL SPLP FFP PAL GOL ADA CP2021 CP2011 SEP EQF HR IT IBAN PEC NEET CIG CIGS ADI SFL NASPI MARKOM INNOVAZIONE ISTAT INAPP HTML JSON EPAR CAF B2B B2C ID URL UNILAV ODT RTF JPG PNG".split(
+    " "
+  )
+);
+
+// Turns a sentence of the Mappa into something that reads as a reply: drops
+// the "(decisione del …)" references, the "Topic:" label that opens many
+// bullets, the uppercase of timeline entries, and fixes capital and full stop.
+export function naturalize(s: string, lead = true): string {
+  let t = s.trim();
+  t = t.replace(/\s*\((?:decision[ei]|propost[ae]|pian[oi]|domand[ae]|D-[A-Z]\d+|regola)[^)]*\)/gi, "");
+  t = t.replace(/\s*\((?:sezione|vedi)[^)]*\)/gi, "");
+  if (lead) {
+    // "Unione dei doppioni: fino al…" -> "Fino al…"; only short labels (up to 5
+    // words) and only when what follows is prose, not a quoted term.
+    const label = /^([^:.;«»]{3,60}):\s+(?=[a-zà-ú])/.exec(t);
+    if (label && label[1].trim().split(/\s+/).length <= 5) t = t.slice(label[0].length);
+    const date = /^(?:lun|mar|mer|gio|ven|sab|dom)?\s*(\d{1,2}\/\d{1,2}(?:\/\d{2,4})?)\s+(?=[A-Za-zÀ-ú«])(.*)$/i.exec(t);
+    if (date) t = `Il ${date[1]}: ${date[2]}`;
+  }
+  t = t.replace(/\b[A-ZÀ-Ý]{4,}\b/g, (w) => (ACRONYMS.has(w) ? w : w.toLowerCase()));
+  t = t.replace(/\s+/g, " ").replace(/\s+([,;:.])/g, "$1").trim();
+  if (t) t = t[0].toUpperCase() + t.slice(1);
+  if (t && !/[.!?»)]$/.test(t)) t += ".";
+  return t;
+}
+
+// The reply for a search hit: the best sentence, plus the next one of the same
+// passage when the first is short, so the answer is complete but still brief.
+function replyFor(passage: Passage, sentence: string): string {
+  const parts = splitSentences(passage.text);
+  const i = parts.indexOf(sentence);
+  let out = naturalize(sentence);
+  if (i >= 0 && sentence.length < 90) {
+    const next = parts[i + 1];
+    if (next && next.length < 260) out += " " + naturalize(next, false);
+  }
+  return out;
 }
 
 const GREETING = /^(ciao|salve|buongiorno|buonasera|buon pomeriggio|hey|hello|hi|ehi)\b/i;
@@ -375,10 +421,15 @@ function sectionAnswer(label: string, idx: Index, base: Pick<Answer, "question" 
   const all = ps.length ? ps : idx.passages.filter((p) => p.section.toLowerCase() === key);
   if (!all.length) return null;
   const [first, ...rest] = all;
+  const sentences = splitSentences(first.text);
   return {
     ...base,
     kind: "hit",
-    short: splitSentences(first.text)[0] ?? null,
+    reply: sentences
+      .slice(0, 2)
+      .map((s, i) => naturalize(s, i === 0))
+      .join(" "),
+    short: sentences[0] ?? null,
     passage: toAnswerPassage(first, idx.meta, null),
     seeAlso: rest.slice(0, 4).map((x) => toAnswerPassage(x, idx.meta, null)),
     followUps: followUpsFor(first, rest.slice(4, 8), idx.faq, []),
@@ -399,28 +450,31 @@ export function answer(question: string): Answer {
   };
 
   if (GREETING.test(q) && q.length < 40) {
+    const message = "Ciao! Sono Mercy. Chiedimi una regola del CRM di Mercury e ti rispondo in due righe.";
     return {
       ...base,
       kind: "greeting",
+      reply: message,
       short: null,
       passage: null,
       seeAlso: [],
       followUps: idx.faq.slice(0, 3).map((e) => ({ label: e.questions[0], prompt: e.questions[0] })),
-      message:
-        "Ciao! Sono Mercy. Chiedimi qualcosa sul CRM di Mercury e ti riporto la regola della Mappa così come è scritta.",
+      message,
       score: 0,
       coverage: 0,
     };
   }
   if (THANKS.test(q) && q.length < 40) {
+    const message = "Di niente! Se ti serve altro, sono qui.";
     return {
       ...base,
       kind: "thanks",
+      reply: message,
       short: null,
       passage: null,
       seeAlso: [],
       followUps: [],
-      message: "Di niente! Se ti serve altro sulla Mappa, sono qui.",
+      message,
       score: 0,
       coverage: 0,
     };
@@ -444,6 +498,7 @@ export function answer(question: string): Answer {
     return {
       ...base,
       kind: "faq",
+      reply: faqHit.entry.reply,
       short: faqHit.entry.answer,
       passage: toAnswerPassage(p, meta, faqHit.entry.answer),
       seeAlso: others.map((x) => toAnswerPassage(x, meta, null)),
@@ -456,18 +511,17 @@ export function answer(question: string): Answer {
 
   // 2. Nothing close enough.
   if (!hits.length) {
+    const message =
+      "Su questo non trovo niente nella Mappa del CRM. Prova a chiedermelo con altre parole (per esempio trattativa, pratica, partner, consensi, form, eventi) oppure chiedi a Espedito.";
     return {
       ...base,
       kind: "none",
+      reply: message,
       short: null,
       passage: null,
       seeAlso: [],
       followUps: idx.faq.slice(0, 3).map((e) => ({ label: e.questions[0], prompt: e.questions[0] })),
-      message: [
-        `Nella Mappa non trovo nulla su «${q}».`,
-        ``,
-        `Prova con parole più vicine al lessico di Mercury: **trattativa**, **pratica**, **partner**, **caporete**, **patronato**, **consensi**, **Gmail**, **Calendar**, **form**, **eventi**, **fasi**, **TMK**, **JobSignal**.`,
-      ].join("\n"),
+      message,
       score: 0,
       coverage: 0,
     };
@@ -482,21 +536,32 @@ export function answer(question: string): Answer {
   // Weak when the chosen passage misses most of the user's words (half, for a
   // two-word question), or the best sentence shares none of them: the Mappa
   // does not answer this directly.
+  const sentence = pick?.sentence ?? splitSentences(chosen.text)[0] ?? chosen.text;
+  // A "chi" question needs a sentence that names a role, a "quando" one a date.
+  const cue = cueFor(type);
+  // Tested on the cleaned sentence, so a "(decisione di Espedito …)" reference does not count as a role.
+  const typeMiss = (type === "who" || type === "when") && cue !== null && !cue.test(naturalize(sentence));
   const weak =
     coverage < 0.5 ||
     (coverage <= 0.5 && own.length <= 2) ||
-    (pick !== null && pick.own === 0 && own.length >= 2);
+    (pick !== null && pick.own === 0 && own.length >= 2) ||
+    typeMiss;
+
+  // Diagram chains and code-like fragments are not worth quoting as "the nearest thing".
+  const quotable = !/[→<>{}=]|\?\w+=/.test(sentence);
+  const weakMessage = quotable
+    ? `Su questo la Mappa non dice niente di preciso. La cosa più vicina che trovo: ${naturalize(sentence)} Se non è quello che cercavi, chiedi a Espedito.`
+    : `Su questo la Mappa non dice niente di preciso. Prova a chiedermelo con altre parole, oppure chiedi a Espedito.`;
 
   return {
     ...base,
     kind: weak ? "weak" : "hit",
-    short: weak ? null : (pick?.sentence ?? null),
-    passage: toAnswerPassage(chosen, meta, pick?.sentence ?? null),
+    reply: weak ? weakMessage : replyFor(chosen, sentence),
+    short: weak ? null : sentence,
+    passage: toAnswerPassage(chosen, meta, sentence),
     seeAlso: others.map((x) => toAnswerPassage(x, meta, null)),
     followUps: followUpsFor(chosen, others, idx.faq, []),
-    message: weak
-      ? `La Mappa non risponde direttamente a «${q}». Il passaggio più vicino è questo; se non basta, chiedi a Espedito.`
-      : null,
+    message: weak ? weakMessage : null,
     score: hits[0].score,
     coverage,
   };
@@ -504,17 +569,8 @@ export function answer(question: string): Answer {
 
 // Plain-text rendering, for tests and for clients that cannot show the structure.
 export function formatAnswer(a: Answer): string {
-  const lines: string[] = [];
-  if (a.message) lines.push(a.message, "");
-  if (a.short) lines.push(`**Risposta breve:** ${a.short}`, "");
-  if (a.passage) {
-    lines.push(`**${a.passage.where}** · pagina ${a.passage.page}, ${a.passage.pageTitle}`);
-    lines.push(a.passage.text, "");
-  }
-  if (a.seeAlso.length) {
-    lines.push(`Vedi anche: ${a.seeAlso.map((s) => `${s.where} (p. ${s.page})`).join(" · ")}`, "");
-  }
+  const lines: string[] = [a.reply, ""];
   if (a.followUps.length) lines.push(`Domande collegate: ${a.followUps.map((f) => f.label).join(" · ")}`, "");
-  if (a.kind !== "greeting" && a.kind !== "thanks") lines.push(`_Fonte: ${a.source}._`);
+  if (a.kind !== "greeting" && a.kind !== "thanks") lines.push(`_${a.source}._`);
   return lines.join("\n").trim();
 }

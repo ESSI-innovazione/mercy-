@@ -1,11 +1,11 @@
 {
   "artifactUrl": "https://claude.ai/artifact/Jgp57YQbYCZDbH96pxMRrA",
   "frameUuid": "8f3a5f6b-282a-41bb-b104-58f579ccefb3",
-  "ver": "1791301985-dfca",
-  "seq": 29,
-  "documentVersion": "29",
-  "documentDate": "06/10/2026",
-  "fetchedAt": "2026-10-07",
+  "ver": "1791545940-4f74",
+  "seq": 35,
+  "documentVersion": "35",
+  "documentDate": "09/10/2026",
+  "fetchedAt": "2026-10-12",
   "pages": [
     {
       "file": "01-mappa-del-crm.md",
@@ -30,6 +30,7 @@
   ],
   "anchors": {
     "Gmail e Calendar": "gmail-e-calendar",
-    "Chi lavora e cosa vede": "chi-vede"
+    "Chi lavora e cosa vede": "chi-vede",
+    "Creazione della trattativa": "nuova-trattativa"
   }
 }

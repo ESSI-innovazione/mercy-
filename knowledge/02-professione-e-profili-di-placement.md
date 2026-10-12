@@ -1,5 +1,3 @@
-
-
 Professione e profili di placement
 
 Mercury ERP · CRM, pagina 2 della Mappa
@@ -10,7 +8,8 @@ Mercury ERP · CRM, pagina 2 della Mappa
 
 La nota di Daniela dell'01/10 distingue tre cose: chi è la persona (professione), che lavoro cerca o sa fare (profili di placement) e che cosa certifica un corso (profilo in uscita). Qui c'è come Mercury le costruisce, cosa arriva prima e dopo il 19/10, cosa serve per costruirlo e cosa resta da decidere.
 
-Aggiornata il 06/10/2026, con la versione 29 della Mappa
+Aggiornata il 09/10/2026, con la versione 35 della Mappa
+
 Il 02/10 Espedito ha deciso: per il passaggio netto del 19/10 serve solo la Professione, che è già nel piano in corso. Profili di placement, profilo in uscita dai corsi e ruoli persona-azienda arrivano dopo il 19/10, in tre lavori separati, e i profili si costruiscono una volta sola. Con i profili di placement JobSignal, la piattaforma di Sara Aboudarda, passa a leggere candidati e aziende da Mercury invece che da HubSpot.
 
 ## Tre campi, tre domande
@@ -18,33 +17,32 @@ Il 02/10 Espedito ha deciso: per il passaggio netto del 19/10 serve solo la Prof
 Sul contatto va ciò che la persona dichiara, sulle pratiche ciò che è documentato. I dati documentati arrivano al contatto come righe dei profili di placement, con la loro origine.
 
 DICHIARATO
+
 Form dei siti professione e mansione
+
 Operatore colloquio, orientamento
+
 CV estrazione dal curriculum
+
 Import da HubSpot una volta sola
 
 CONTATTO
+
 Professione una voce: chi è la persona PRIMA DEL 19/10 · MAI DALLE PRATICHE
+
 stato occupazionale · condizioni · categorie protette
+
 Profili di placement più righe: che lavoro cerca o sa fare origine, stato, esperienza, ADA DOPO IL 19/10 · CAMPO DEL MATCHING
 
 Attività (corso) profilo in uscita: qualificazione → ADA → CP2021
+
 Pratica del corsista esito e ADA certificate
+
 Pratica di tirocinio progetto formativo: SEP, ADA, CP
 
 JobSignal legge da Mercury
 
-professione
-
-profili
-
-iscritti al corso
-
-riga «corso»
-
-riga «tirocinio»
-
-legge solo i profili
+professione profili iscritti al corso riga «corso» riga «tirocinio» legge solo i profili
 
 Viola: i campi del contatto. Giallo e arancio: attività e pratiche della sezione Operations. Bordo tratteggiato: arriva dopo il 19/10. La professione non entra nel confronto di JobSignal: descrive soprattutto clienti e consulenti (Commercialista 41.000, Consulente del lavoro 16.500) e porterebbe rumore.
 
@@ -55,18 +53,23 @@ Chi è la persona, il suo mestiere.
 Prima del 19/10
 
 Quante
+
 una voce
 
 Su chi
+
 partner e contatti
 
 Da dove
+
 form dei siti, operatore, import di HubSpot
 
 Chi vince
+
 l'operatore, poi il form più recente, poi l'import
 
 Mai
+
 ricavata dalle pratiche: al massimo Mercury propone, decide l'operatore
 
 ### Profili di placement
@@ -76,15 +79,19 @@ Che lavoro la persona cerca o sa fare (l'ex DB lavoro).
 Dopo il 19/10 · lavoro A
 
 Quante
+
 più righe, una per voce
 
 Su chi
+
 solo contatti
 
 Ogni riga
+
 voce e codice CP2021, nota, priorità, stato, provenienze con origine, ADA ed esperienza
 
 Serve a
+
 JobSignal, in tutti e tre i casi: stage dopo un corso, politica attiva, ricerca e selezione
 
 ### Profilo in uscita dai corsi
@@ -94,22 +101,22 @@ Che cosa certifica un corso: è del corso, non della persona.
 Dopo la E1 · lavoro B
 
 Dove
+
 sull'attività, nella sezione Operations, al posto del campo di testo di oggi (vuoto in 9.263 attività su 9.335)
 
 Catena
+
 qualificazione del Repertorio → ADA dell'Atlante → codici CP2021
 
 Poi
+
 a corso superato diventa una riga dei profili di placement della persona, con origine «corso»
 
 ### Stato occupazionale Prima del 19/10
 
 Una risposta: che cosa fa adesso la persona. Su partner e contatti, 12 valori.
 
-Occupato dipendente Lavoratore autonomo / libero professionista Imprenditore
-Disoccupato In cerca di prima occupazione Studente scuola superiore
-Studente universitario Praticante / tirocinante Pensionato Altro
-Occupato (tipo non indicato) Studente (livello non indicato)
+Occupato dipendente Lavoratore autonomo / libero professionista Imprenditore Disoccupato In cerca di prima occupazione Studente scuola superiore Studente universitario Praticante / tirocinante Pensionato Altro Occupato (tipo non indicato) Studente (livello non indicato)
 
 Tratteggio: solo per lo storico di HubSpot, non si scelgono.
 
@@ -165,7 +172,6 @@ Sì o no, in un campo a parte. Dice che la persona ha una disabilità, che è un
 
 La tabella della nota di Daniela, con il momento in cui ogni origine entra in Mercury.
 
-|
 | Origine | Da dove | Stato iniziale | Esperienza | Quando
 
 | Import HubSpot | DB lavoro: 35.547 contatti, 36.295 righe | attiva deciso il 02/10 | non nota | A, dopo il 19/10
@@ -186,74 +192,51 @@ La tabella della nota di Daniela, con il momento in cui ogni origine entra in Me
 
 Cosa si costruisce e quando. Prima del 19/10 solo ciò che serve al passaggio netto; il resto dopo, in quattro lavori: A profili di placement, C ruoli persona-azienda, B profilo in uscita dai corsi, poi JobSignal. La E1 è il legame tra pratiche e contatti, che serve alla B.
 
-01/10
-
+- 01/10
 ### Lista delle voci in Mercury fatto
-
 446 voci in 28 aree e le corrispondenze dei valori di HubSpot, dal file di Luca. Tendina con le voci raggruppate per area.
 
-06/10 sera
-
+- da ripianificare
 ### Professione, stato occupazionale e categorie protette su partner e contatti
+Piano delle professioni, con lo stato già a 12 valori. Previsto per il 06/10 sera e non fatto: del piano sono applicate solo la lista e le funzioni che la leggono (01/10), il resto è fermo e va ripianificato.
 
-Piano delle professioni in corso, con lo stato già a 12 valori.
-
-07-09/10
-
+- da ripianificare
 ### Conversione da HubSpot, pagina Professioni, schede, tabelle, form e TMK
+Previsto dal 07 al 09/10 e fermo con il resto del piano. La professione prenderà il posto della tipologia del partner; dal 09/10/2026 nessuna delle due conta per la fase del partner, che Mercury calcola dalle trattative e dall'Account. Pagina Professioni solo per gli Admin: aggiungi, rinomina, cambia area, togli e sostituisci.
 
-La professione prende il posto della tipologia del partner (anche per passare a Prospect). Pagina Professioni solo per gli Admin: aggiungi, rinomina, cambia area, togli e sostituisci.
-
-12-13/10
-
+- 12-13/10
 ### Prova di Espedito
 
-19/10
-
+- 19/10
 ### Passaggio netto
+La professione è in uso nel CRM se il piano delle professioni, da ripianificare, arriva prima. I profili sono ancora nei dati grezzi di HubSpot, conservati per la conversione.
 
-La professione è in uso nel CRM. I profili sono ancora nei dati grezzi di HubSpot, conservati per la conversione.
-
-dal 20/10 · ~2 settimane
-
+- dal 20/10 · ~2 settimane
 ### Profili di placement A
-
 Codici CP2021, affidabilità del codice e sinonimi ISTAT sulle voci; righe dei profili con le provenienze; Condizioni per i programmi; conversione del DB lavoro e degli altri campi di HubSpot; tab «Profili di placement» nella scheda del contatto con Conferma, Chiudi e Riapri; riquadro nella vista rapida; filtri e colonne nella tabella dei contatti; tabella «Profili da confermare»; codici e conteggi nella pagina Professioni; campo «Cerco lavoro come…» nei form; lettura per JobSignal (candidati, voci, aziende), con il contratto concordato con Sara. Ogni schermata parte da un'anteprima approvata da Espedito. Rilascio stimato nella prima settimana di novembre.
 
-fine ottobre
-
+- fine ottobre
 ### Ruoli persona-azienda, prima parte C
-
 Elenco nuovo dei ruoli (titolare o legale rappresentante, socio o amministratore, responsabile del personale, referente formazione, amministrazione, responsabile di sede o reparto, lavoratore, altro referente; per patronati e CAF responsabile e operatore) e conversione dei valori di oggi, con il testo originale sempre nella qualifica.
 
-dopo il 19/10
-
+- dopo il 19/10
 ### Pratiche legate ai contatti E1
-
 Ogni pratica legata con le chiavi di Mercury alla sua persona (corsista, tirocinante, apprendista, beneficiario), con il codice fiscale dai monitor (3.150 tirocini in Campania, 3.599 apprendistati) e le trattative per il resto. Senza questo passo non nasce nessuna riga da corsi e tirocini.
 
-novembre · B1 ~2 settimane, B2 ~1 dopo la E1
-
+- novembre · B1 ~2 settimane, B2 ~1 dopo la E1
 ### Profilo in uscita dai corsi B1 e B2
-
 Tabelle di riferimento: CP2021, raccordo CP2011 → CP2021, Atlante del Lavoro (settori e ADA), Repertori delle qualificazioni (nazionale e Campania per primi, con lo storico dei codici). Le tre schermate stanno in Operations, come tab nei drawer di attività e pratica (decisione del 2/10): tab «Profilo in uscita» nel drawer dell'attività (qualificazione, cosa certifica il corso, ADA spuntate, CP2021); tab «Esito del corso» nel drawer della pratica del corsista, più l'inserimento degli esiti di tutti gli iscritti dall'attività (si tolgono le ADA non certificate, non se ne aggiungono); tab «Progetto formativo» nel drawer della pratica di tirocinio (un SEP, una o due ADA, attività, CP2021); righe automatiche nei profili a corso superato e a tirocinio concluso. Dopo la E1 e dopo aver trovato i file dei Repertori.
 
-novembre
-
+- novembre
 ### Ruoli persona-azienda, seconda parte C
-
 Etichette calcolate dalle pratiche: tutor aziendale («tutor in N tirocini attivi», per il limite di 3 tirocinanti), beneficiario, legale rappresentante da visura. Dopo la E1.
 
-entro il 30/11, poi
-
+- entro il 30/11, poi
 ### JobSignal Sara
-
 Entro il 30/11 JobSignal passa alla lettura di Mercury: candidati e abbinamenti sulle chiavi di Mercury, lista delle voci di Mercury al posto delle 339 del DB lavoro, aziende di Mercury al posto di HubSpot. Poi, dopo A e B, il confronto del codice CP2021 dell'offerta con le righe dei profili (identico, stesso gruppo, stessa area), affinato con le ADA, con pesi per esperienza, conferma e recenza; le offerte a testo libero si riconoscono con i sinonimi ISTAT.
 
-da definire
-
+- da definire
 ### Ambiti di docenza albo docenti
-
 Campo a scelta multipla con le 54 specializzazioni; dopo, le voci «Docente …» escono dalla lista.
 
 Verde: fatto. Arancio: il passaggio netto. Viola: stime al 02/10, che dipendono dal calendario dei lavori dopo il passaggio netto e possono spostarsi.
@@ -291,4 +274,3 @@ Verde: fatto. Arancio: il passaggio netto. Viola: stime al 02/10, che dipendono 
 Fonti: nota di Daniela «Professione, profili di placement e profilo in uscita dai corsi» (01/10), foglio «Mappatura_Professione_Profili_placement_v2», bozze «Mercury, dove si inseriscono le ADA», decisioni di Espedito del 02/10, piano delle professioni approvato l'01/10.
 
 Il file di conversione per contatto citato nel foglio ( conversione-contatti.csv ) non serve: Mercury converte direttamente dai valori di HubSpot conservati dall'import, con la tabella delle corrispondenze di Luca.
-

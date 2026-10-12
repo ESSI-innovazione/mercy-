@@ -36,23 +36,23 @@
   },
   {
     "q": ["Quali sono le fasi di un partner?", "Come avanza di fase un partner?", "Quando un partner diventa Prospect?"],
-    "r": "Suspect, lead, prospect, partner, ex partner. Diventa lead quando ha un Account assegnato, prospect con un appuntamento, partner quando ha i dati fiscali e la scheda provvigionale approvata.",
-    "a": "suspect → lead → prospect → partner → ex partner — Lead con un Account assegnato, prospect con un appuntamento, partner con dati fiscali e scheda provvigionale approvata."
+    "r": "Mercury calcola da solo la fase di un partner dal 09/10, con queste regole in ordine: Ex partner solo con il pulsante «Segna come Ex partner», da Partner e con il motivo; Partner con almeno una trattativa vinta; Prospect con almeno una trattativa aperta e nessuna vinta; Lead con un Account assegnato a un venditore e nessuna trattativa aperta né vinta; Suspect tutti gli altri.",
+    "a": "suspect → lead → prospect → partner → ex partner — Fase calcolata da Mercury dal 09/10 . Le regole, in ordine:"
   },
   {
     "q": ["Quali sono le fasi di un contatto?", "Come avanza di fase un contatto?", "Quando un contatto diventa lead o prospect?"],
-    "r": "Suspect, lead, prospect, cliente, più l'etichetta «beneficiario». Diventa lead con un interesse manifestato e prospect con una trattativa aperta. Chi arriva da un form dei siti e non è già in Mercury nasce Suspect.",
-    "a": "suspect → lead → prospect → cliente · etichetta beneficiario — Lead con un interesse manifestato, prospect con una trattativa aperta."
+    "r": "Suspect, lead, prospect, cliente. Chi arriva da un form dei siti o da un file e non è già in Mercury nasce Suspect, e diventa lead con un interesse manifestato, segnato dalla scheda. Aprire una trattativa non cambia la fase della persona: Prospect e Cliente oggi si raggiungono solo forzando la fase.",
+    "a": "suspect → lead → prospect → cliente — Chi arriva da un form dei siti o da un file e non è già in Mercury nasce Suspect. Lead con un interesse manifestato, segnato dalla scheda. Aprire una trattativa non cambia la fase della sua persona (decisione di Espedito dell'08/10, domanda 17)."
   },
   {
     "q": ["Quali sono le fasi di una trattativa?", "Quali sono gli stadi di una trattativa?", "Si può riaprire una trattativa persa?"],
     "r": "Opportunità, elaborare preventivo, preventivo pronto, preventivo inviato, in attesa di autorizzazione, poi vinta o persa. Le linee SPL usano solo opportunità, vinta e persa. Una trattativa persa si può riaprire.",
-    "a": "opportunità → elaborare preventivo → preventivo pronto → preventivo inviato → in attesa di autorizzazione → vinta persa — Le linee SPL usano solo opportunità, vinta e persa. Una persa si può riaprire."
+    "a": "Le linee SPL ed ECOM usano solo opportunità, vinta e persa (ECOM non è più attiva: solo trattative storiche)."
   },
   {
     "q": ["Quali sono le fasi di un'azienda?", "Quali sono le fasi di un patronato?", "Quando un'azienda diventa aderente o cliente?"],
     "r": "Suspect, lead, prospect, aderente, cliente. Diventa aderente con la prima pratica ACP avviata e cliente con la prima pratica avviata non ACP; ogni notte risulta attiva o inattiva in base all'ultima pratica degli ultimi 12 mesi. Senza P.IVA non passa ad aderente o cliente.",
-    "a": "suspect → lead → prospect → aderente → cliente — Aderente con la prima pratica ACP avviata, cliente con la prima pratica avviata non ACP; ogni notte attiva o inattiva in base all'ultima pratica (12 mesi)."
+    "a": "Aderente con la prima pratica ACP avviata, cliente con la prima pratica avviata non ACP."
   },
   {
     "q": ["Quali sono le fasi di un evento?", "Quali stati ha un evento?"],
@@ -71,8 +71,8 @@
   },
   {
     "q": ["Chi riapre un evento chiuso?", "Cosa succede agli iscritti quando chiudo un evento?"],
-    "r": "Quando chiudi un evento, chi non ha la presenza diventa assente. Riaprire l'evento può farlo solo un Admin.",
-    "a": "Chiusura e presenze: chiudendo l'evento chi non ha la presenza diventa assente; riapre solo un Admin."
+    "r": "Quando chiudi un evento, chi è iscritto o confermato e non ha la presenza diventa assente. Riaprirlo può farlo solo un Admin: l'evento riaperto torna pubblicato e gli assenti restano assenti.",
+    "a": "chiudendo l'evento chi è iscritto o confermato e non ha la presenza diventa assente; riapre solo un Admin, e l'evento riaperto torna pubblicato con gli assenti che restano assenti."
   },
   {
     "q": ["Cosa succede se la capienza dell'evento è superata?", "C'è una lista d'attesa per gli eventi?", "Cosa vede chi si iscrive a posti esauriti?"],
@@ -191,8 +191,8 @@
   },
   {
     "q": ["Come si iscrivono le persone a un evento?", "Come arrivano gli iscritti a un evento?", "Quali stati ha un'iscrizione a un evento?"],
-    "r": "Le persone si iscrivono a un evento dal form, da un file Excel o CSV, a mano oppure in blocco dalle tabelle di partner e contatti; una persona una volta sola per evento. Gli stati sono iscritto, confermato, presente o assente, annullato. Iscrivere a mano e segnare le presenze lo fa tutta la sezione Commerciale, con l'evento pubblicato.",
-    "a": "Iscritti: partner e contatti, una persona una volta per evento; si iscrivono dal form, da un file Excel o CSV, a mano o in blocco dalle tabelle di partner e contatti."
+    "r": "Le persone si iscrivono a un evento da un file Excel o CSV, a mano oppure in blocco dalle tabelle di partner e contatti; dal form solo dopo il 19/10. Una persona una volta sola per evento. Gli stati sono iscritto, confermato, presente o assente, annullato. Iscrivere a mano e segnare le presenze lo fa tutta la sezione Commerciale, con l'evento pubblicato.",
+    "a": "Iscritti: partner e contatti, una persona una volta per evento; si iscrivono da un file Excel o CSV, a mano o in blocco dalle tabelle di partner e contatti, e dal form solo dopo il 19/10, con i Task 23-25 del piano degli eventi."
   },
   {
     "q": ["Quali sono le regole sulle email dei partner?", "Quante email può avere un partner?", "Qual è l'email che usa Finance per i partner?"],
@@ -221,8 +221,8 @@
   },
   {
     "q": ["Chi può modificare la lista delle professioni?", "Chi gestisce le professioni?"],
-    "r": "La lista delle professioni la gestiscono solo gli Admin, dalla pagina Professioni: aggiungere, rinominare, cambiare area, togliere e sostituire. Una voce tolta si sostituisce con un'altra su tutte le persone che l'avevano.",
-    "a": "La lista la gestiscono solo gli Admin: una voce tolta si sostituisce con un'altra su tutte le persone che l'avevano."
+    "r": "Del piano delle professioni oggi è fatta solo la lista, di 446 voci. La lista la gestiranno solo gli Admin: una voce tolta si sostituirà con un'altra su tutte le persone che l'avevano.",
+    "a": "La lista la gestiranno solo gli Admin: una voce tolta si sostituirà con un'altra su tutte le persone che l'avevano."
   },
   {
     "q": ["Quando arrivano i profili di placement?", "Quando viene rilasciata la lettura per JobSignal?"],
@@ -231,8 +231,8 @@
   },
   {
     "q": ["Chi paga una trattativa?", "Chi può essere il pagante di una trattativa?"],
-    "r": "Una trattativa la può pagare un'azienda, un patronato, la persona stessa o un ente finanziatore. Mercury lo propone da solo (se c'è un'azienda, l'azienda; se il servizio è finanziato, l'ente; altrimenti la persona) e si corregge a mano.",
-    "a": "Chi paga proposta 26/09 un'azienda, un patronato, la persona stessa o un ente finanziatore."
+    "r": "Il cliente è un'azienda, un patronato o una sola persona. Chi paga, se è diverso dal cliente, e l'ente finanziatore sono ancora una proposta tra i punti aperti, e fino al 19/10 non c'è nessun campo «pagato da».",
+    "a": "Chi paga, se diverso dal cliente, e l'ente finanziatore sono ancora una proposta, tra i punti aperti : fino al 19/10 nessun campo «pagato da» (decisione di Espedito dell'08/10, domanda 17)."
   },
   {
     "q": ["Si importano le liste di HubSpot?", "Le liste di HubSpot arrivano in Mercury?"],
@@ -241,13 +241,13 @@
   },
   {
     "q": ["Quando la P.IVA è obbligatoria per un'azienda?", "Cosa serve per portare un'azienda a Prospect?"],
-    "r": "Aprire una trattativa porta l'azienda a Prospect, e da lì la P.IVA è obbligatoria.",
-    "a": "Aprire una trattativa porta l'azienda a Prospect: da lì la P.IVA è obbligatoria."
+    "r": "Aprire o riaprire una trattativa porta l'azienda a Prospect, e da lì la P.IVA è obbligatoria: senza P.IVA dell'azienda la trattativa non si apre, una persa non si riapre e non si cambia il cliente. Per i patronati oggi no.",
+    "a": "Aprire o riaprire una trattativa porta l'azienda o il patronato a Prospect. Per le aziende da Prospect in su la P.IVA è obbligatoria: senza P.IVA dell'azienda la trattativa non si apre, una persa non si riapre e non si cambia il cliente. Per i patronati oggi no ( punti aperti )."
   },
   {
     "q": ["Come si torna indietro di fase?", "Come si forza una fase?", "Chi può forzare una fase?"],
-    "r": "Tornare indietro è una forzatura: serve il potere «forza fase», degli Admin, concesso utente per utente, e il motivo resta nello storico. Si può forzare anche su più record insieme dalla tabella, al massimo 500, con lo stesso motivo per tutti.",
-    "a": "Tornare indietro è una forzatura: serve il potere \"forza fase\", degli Admin (concesso utente per utente dopo l'import), e il motivo resta nello storico."
+    "r": "Tranne che per i partner, tornare indietro è una forzatura: serve il potere «forza fase», che va agli Admin utente per utente, con le date di inizio e fine. Oggi non ce l'ha nessuno, neanche gli Admin, quindi oggi nessuna fase si forza. Il motivo resta nello storico, e si può forzare anche su più record insieme dalla tabella, al massimo 500. I partner non si forzano più e le trattative vinte restano fuori.",
+    "a": "tornare indietro è una forzatura: serve il potere \"forza fase\", che va agli Admin utente per utente, con le date di inizio e fine; oggi non ce l'ha nessuno, neanche gli Admin, quindi oggi nessuna fase si forza (punti aperti)."
   },
   {
     "q": ["Chi può creare una nuova azienda già esistente di un altro Account?", "Cosa succede se inserisco un'azienda che esiste già?"],
@@ -276,8 +276,8 @@
   },
   {
     "q": ["Quali campi posso esportare in Excel?", "IBAN e dati di nascita si esportano?"],
-    "r": "In Excel puoi esportare tutti i campi di ogni oggetto tranne IBAN e dati di nascita. Se serviranno, si daranno solo con un potere dedicato.",
-    "a": "Colonne ed export Excel: si possono scegliere tutti i campi di ogni oggetto tranne IBAN e dati di nascita; se serviranno, si daranno solo con un potere dedicato (decisione del 30/09)."
+    "r": "In Excel puoi esportare tutti i campi di ogni oggetto tranne IBAN e dati di nascita (e le credenziali dei fondi). Se serviranno, si daranno solo con un potere dedicato.",
+    "a": "Colonne ed export Excel: si possono scegliere tutti i campi di ogni oggetto tranne IBAN e dati di nascita (e le credenziali dei fondi); se serviranno, si daranno solo con un potere dedicato (decisione del 30/09)."
   },
   {
     "q": ["Chi può usare il Marketing in Mercury?", "Chi ha accesso ai form e agli invii dei siti?"],
@@ -286,7 +286,7 @@
   },
   {
     "q": ["Chi può fissare una riunione nel calendario di un collega?", "Posso creare una riunione nel calendario di un collega?"],
-    "r": "Sì: tutto il Commerciale può fissare una riunione per qualunque collega del Commerciale. La riunione nasce nel calendario del collega, che la organizza; la persona della scheda e chi la fissa sono invitati, e la descrizione dice «Fissato da» con il nome.",
-    "a": "La può fissare tutto il Commerciale per qualunque collega del Commerciale."
+    "r": "Non più per qualunque collega: dall'08/10 una riunione si crea nel calendario di un collega solo se se ne vede il calendario. Per gli altri colleghi si vedono solo libero e occupato, e la riunione nasce nel proprio calendario con il collega tra gli invitati. Quando è nel calendario del collega, lui la organizza, la persona della scheda e chi la fissa sono invitati e la descrizione dice «Fissato da» con il nome.",
+    "a": "Dall'08/10 una riunione si crea nel calendario di un collega solo se se ne vede il calendario (regola in «Cosa si vede dei colleghi»), non più da tutto il Commerciale per qualunque collega; i colleghi si possono sempre invitare."
   }
 ]

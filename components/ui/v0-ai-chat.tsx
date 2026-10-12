@@ -5,6 +5,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Answer } from "@/lib/search";
+import type { NewsItem } from "@/lib/news";
 import {
   ArrowUpIcon,
   CalendarClock,
@@ -12,6 +13,7 @@ import {
   GitMerge,
   LoaderCircle,
   Mail,
+  Megaphone,
   RotateCcw,
   Shield,
   Users,
@@ -127,7 +129,7 @@ function wait(ms: number, signal: AbortSignal) {
 let idCounter = 0;
 const nextId = () => `m${Date.now()}-${idCounter++}`;
 
-export function VercelV0Chat() {
+export function VercelV0Chat({ news }: { news: NewsItem[] }) {
   const [value, setValue] = useState("");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [busy, setBusy] = useState(false);
@@ -302,6 +304,7 @@ export function VercelV0Chat() {
                 />
               ))}
             </div>
+            <NewsSection news={news} />
           </>
         ) : (
           <div className="w-full flex-1 flex flex-col">
@@ -501,6 +504,78 @@ function AnswerView({ answer, onAsk, busy }: { answer: Answer; onAsk: (p: string
         </div>
       )}
     </div>
+  );
+}
+
+// Announcements from the top of the Mappa, newest first: the latest three
+// open, the rest behind "Mostra tutte".
+function NewsSection({ news }: { news: NewsItem[] }) {
+  const [all, setAll] = useState(false);
+  if (!news.length) return null;
+  const shown = all ? news : news.slice(0, 3);
+  return (
+    <section className="w-full pt-2" aria-labelledby="news-title">
+      <div className="flex items-center gap-2 mb-3">
+        <Megaphone className="w-4 h-4 text-accent" />
+        <h2 id="news-title" className="text-sm font-semibold text-white">
+          Novità dalla Mappa
+        </h2>
+      </div>
+      <ul className="space-y-2.5">
+        {shown.map((n, i) => (
+          <NewsCard key={`${n.when}-${i}`} item={n} latest={i === 0} />
+        ))}
+      </ul>
+      {news.length > 3 && (
+        <button
+          type="button"
+          onClick={() => setAll((v) => !v)}
+          className="mt-3 text-xs text-muted-foreground hover:text-white transition-colors"
+        >
+          {all ? "Mostra solo le ultime" : `Mostra tutte (${news.length})`}
+        </button>
+      )}
+    </section>
+  );
+}
+
+function NewsCard({ item, latest }: { item: NewsItem; latest: boolean }) {
+  const [open, setOpen] = useState(false);
+  return (
+    <li className="rounded-xl border border-border bg-surface px-4 py-3">
+      <div className="flex items-center gap-2 mb-1.5">
+        <span
+          className={cn(
+            "text-[11px] px-2 py-0.5 rounded-full border",
+            latest ? "border-accent/60 text-accent" : "border-border text-muted-foreground"
+          )}
+        >
+          {item.when}
+        </span>
+        {latest && <span className="text-[11px] font-medium text-accent">Nuovo</span>}
+      </div>
+      <p className="text-sm font-medium text-white leading-snug">{item.title}</p>
+      {item.body && (
+        <>
+          <p
+            className={cn(
+              "mt-1 text-[13px] leading-relaxed text-muted-foreground",
+              !open && "line-clamp-2"
+            )}
+          >
+            {item.body}
+          </p>
+          <button
+            type="button"
+            onClick={() => setOpen((v) => !v)}
+            aria-expanded={open}
+            className="mt-1 text-xs text-accent hover:text-accent-300 transition-colors"
+          >
+            {open ? "Chiudi" : "Leggi tutto"}
+          </button>
+        </>
+      )}
+    </li>
   );
 }
 

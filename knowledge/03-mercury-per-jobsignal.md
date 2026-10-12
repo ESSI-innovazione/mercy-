@@ -1,5 +1,3 @@
-
-
 Mercury per JobSignal
 
 Mercury ERP · CRM, pagina 3 della Mappa · per Sara Aboudarda
@@ -10,7 +8,8 @@ Mercury ERP · CRM, pagina 3 della Mappa · per Sara Aboudarda
 
 Dal 19/10 candidati e aziende vivono in Mercury e HubSpot non si aggiorna più; il 30/11 HubSpot chiude. Qui c'è la proposta di come JobSignal legge da Mercury: cosa espone Mercury, cosa cambia dal tuo lato, entro quando, e le domande per te.
 
-Proposta del 02/10/2026, da concordare con Espedito (domanda 121) · aggiornata il 06/10/2026, con la versione 29 della Mappa
+Proposta del 02/10/2026, da concordare con Espedito (domanda 121) · aggiornata il 09/10/2026, con la versione 35 della Mappa
+
 Le scelte di fondo le ha già fatte Espedito il 02/10: la lettura entra nel lavoro sui profili di placement di Mercury, è di sola lettura con una chiave tutta sua, e dei candidati passa il minimo (niente codice fiscale, data di nascita e categorie protette). Campi, frequenza e formato li fissiamo con te.
 
 ## Perché cambia e quando
@@ -35,7 +34,7 @@ HubSpot chiude: JobSignal deve già leggere da Mercury.
 
 Ho letto solo la struttura delle tabelle del progetto jobsignal , nessun dato.
 
-| | In JobSignal | Oggi | Con Mercury
+| In JobSignal | Oggi | Con Mercury
 
 | candidati | copia di SaturnHR ed export di HubSpot, chiave hubspot_id | contatti di Mercury con almeno un profilo di placement non chiuso, chiave l'id di Mercury (uuid)
 
@@ -56,6 +55,7 @@ Ho letto solo la struttura delle tabelle del progetto jobsignal , nessun dato.
 Un solo indirizzo di Mercury, con una chiave segreta che hai solo tu nelle variabili d'ambiente di JobSignal. Non ricevi mai chiavi del database di Mercury. Tutte le risposte sono in JSON e i legami usano gli id di Mercury.
 
 candidati?dal=<data e ora>&dopo=<cursore>
+
 I candidati cambiati dalla data indicata, a pagine da 500, in ordine di modifica. Ogni pagina restituisce il cursore della successiva. Alla prima chiamata, senza data, arrivano tutti. Come data conviene usare l'ultima lettura meno 10 minuti, così non si perde nessuna modifica ancora in corso; i doppioni sono innocui.
 
 Esempio inventato
@@ -83,8 +83,8 @@ Esempio inventato
 id_hubspot serve solo per spostare una volta candidati e abbinamenti sugli id di Mercury, ed esce solo fino al 30/11/2026.
 
 usciti?dal=<data e ora>
-I candidati da togliere o da spostare, con il motivo: contatto archiviato, profili tutti chiusi, oppure unito a un altro contatto (fusione di doppioni). Per un'unione trovi l'id che resta, così gli abbinamenti passano al contatto giusto.
 
+I candidati da togliere o da spostare, con il motivo: contatto archiviato, profili tutti chiusi, oppure unito a un altro contatto (fusione di doppioni). Per un'unione trovi l'id che resta, così gli abbinamenti passano al contatto giusto.
 { "usciti": [
 { "id": "a1…", "motivo": "unito", "unito_in": "7f3c…" },
 { "id": "c9…", "motivo": "senza_profili" },
@@ -92,12 +92,15 @@ I candidati da togliere o da spostare, con il motivo: contatto archiviato, profi
 ] }
 
 cv?id=<id del candidato>
+
 Un collegamento temporaneo al curriculum di un solo candidato, valido 10 minuti. I CV non arrivano mai in blocco.
 
 voci
+
 La lista di Mercury: id, nome, area, codice CP2021, tipo di voce (mestiere, generica), sinonimi ISTAT e i valori del vecchio DB lavoro che portano a quella voce. Ti serve per passare dalle 339 voci di oggi alla lista nuova.
 
 aziende?piva=<P.IVA> · aziende?nome=<testo>
+
 Cerca un'azienda di Mercury e restituisce id, ragione sociale, P.IVA, comune, provincia e nome del proprietario. Prende il posto della riconciliazione con HubSpot.
 
 - Ogni chiamata resta in un registro di Mercury (data, richiesta, numero di righe), senza dati personali.
@@ -139,4 +142,3 @@ Cerca un'azienda di Mercury e restituisce id, ragione sociale, P.IVA, comune, pr
 - Ti serve una lettura di prova con dati inventati prima del rilascio? Proposta: sì, con candidati inventati, una o due settimane prima del rilascio.
 
 Fonti: spec di Mercury «Professione e profili di placement» del 02/10 (sezione «Lettura per JobSignal»), nota di Daniela dell'01/10 sul placement, struttura delle tabelle del progetto Supabase jobsignal letta il 02/10, decisioni di Espedito del 02/10. Regole e tempi di professione e profili di placement nella pagina 2 .
-

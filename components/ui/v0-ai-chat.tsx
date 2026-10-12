@@ -542,24 +542,29 @@ function NewsSection({ news }: { news: NewsItem[] }) {
 function NewsCard({ item, latest }: { item: NewsItem; latest: boolean }) {
   const [open, setOpen] = useState(false);
   return (
-    <li className="rounded-xl border border-border bg-surface px-4 py-3">
+    <li
+      className={cn(
+        "rounded-xl bg-white px-4 py-3 shadow-lg shadow-black/20 border-l-4",
+        latest ? "border-accent" : "border-primary-200"
+      )}
+    >
       <div className="flex items-center gap-2 mb-1.5">
         <span
           className={cn(
-            "text-[11px] px-2 py-0.5 rounded-full border",
-            latest ? "border-accent/60 text-accent" : "border-border text-muted-foreground"
+            "text-[11px] font-medium px-2 py-0.5 rounded-full",
+            latest ? "bg-accent-700 text-white" : "bg-primary-50 text-primary-500"
           )}
         >
           {item.when}
         </span>
-        {latest && <span className="text-[11px] font-medium text-accent">Nuovo</span>}
+        {latest && <span className="text-[11px] font-semibold text-accent-700">Nuovo</span>}
       </div>
-      <p className="text-sm font-medium text-white leading-snug">{item.title}</p>
+      <p className="text-sm font-semibold text-primary leading-snug">{item.title}</p>
       {item.body && (
         <>
           <p
             className={cn(
-              "mt-1 text-[13px] leading-relaxed text-muted-foreground",
+              "mt-1 text-[13px] leading-relaxed text-primary-400",
               !open && "line-clamp-2"
             )}
           >
@@ -569,7 +574,7 @@ function NewsCard({ item, latest }: { item: NewsItem; latest: boolean }) {
             type="button"
             onClick={() => setOpen((v) => !v)}
             aria-expanded={open}
-            className="mt-1 text-xs text-accent hover:text-accent-300 transition-colors"
+            className="mt-1 text-xs font-medium text-accent-700 hover:text-primary transition-colors"
           >
             {open ? "Chiudi" : "Leggi tutto"}
           </button>

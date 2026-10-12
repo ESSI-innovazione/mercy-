@@ -1,14 +1,14 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { Inter, Space_Mono } from "next/font/google";
+import { Plus_Jakarta_Sans, Space_Mono } from "next/font/google";
 import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 // "Mercury" liquid login (gooey blobs + underline inputs), recoloured to the
 // Mercy palette: navy #0F172B background, orange #FC5A00 accent.
 
-const inter = Inter({ subsets: ["latin"], weight: ["300", "400", "800"] });
+const jakarta = Plus_Jakarta_Sans({ subsets: ["latin"], weight: ["300", "400", "800"] });
 const mono = Space_Mono({ subsets: ["latin"], weight: ["400"] });
 
 // Fixed layout so server and client render the same markup (no hydration mismatch).
@@ -63,7 +63,7 @@ export function MercuryLogin({
   return (
     <div
       className={cn(
-        inter.className,
+        jakarta.className,
         "mercury-login relative flex h-screen w-screen items-center justify-center overflow-hidden bg-primary text-foreground"
       )}
     >

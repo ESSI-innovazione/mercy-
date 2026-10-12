@@ -30,7 +30,18 @@ Il documento viene aggiornato quasi ogni giorno (oggi è alla versione 29 del 06
 1. Rileggere le quattro pagine dell'artifact (con Claude Code: «aggiorna la conoscenza di Mercy dall'artifact»; lo strumento Artifact legge `index.html` e i tre file `placement.html`, `jobsignal.html`, `guida-form.html`).
 2. Convertire l'HTML in testo e sovrascrivere i quattro file in `knowledge/`.
 3. Aggiornare `knowledge/meta.json` (`ver`, `seq`, `documentVersion`, `documentDate`, `fetchedAt`).
-4. Commit e push su `main`: Vercel ridistribuisce da solo.
+4. Controllare le FAQ con `npm run check:faq`: elenca le voci di `knowledge/faq.json` la cui frase non è più nella Mappa (a runtime si spegnerebbero da sole). Per ognuna si aggiorna `a` con la frase nuova e, se il senso è cambiato, anche `r`.
+5. Commit e push su `main`: Vercel ridistribuisce da solo.
+
+### Aggiornamento automatico (routine giornaliera)
+
+Una routine di Claude Code nel cloud («Mercy · aggiorna la conoscenza», https://claude.ai/code/routines) fa questi passi ogni mattina alle 06:00 UTC (08:00 ora legale, 07:00 ora solare):
+
+- confronta `seq` dell'artifact con `knowledge/meta.json`; se sono uguali si ferma senza toccare nulla;
+- se l'artifact è andato avanti, rilegge le quattro pagine, riscrive `knowledge/` e `meta.json` e lancia `npm run check:faq`;
+- se tutte le FAQ reggono, fa commit e push su `main` (Vercel ridistribuisce); se qualche FAQ si è rotta, la sistema su un ramo `knowledge/v<versione>` e apre una pull request da rivedere.
+
+Se lo strumento Artifact non è disponibile nella sessione cloud, la routine non inventa nulla: si ferma e lo scrive nel riepilogo. In quel caso l'aggiornamento resta manuale (passi 1-5).
 
 ### Controllo di freschezza
 
@@ -105,6 +116,8 @@ lib/
 knowledge/
   01-…04-*.md, meta.json le quattro pagine della Mappa, la loro versione, gli anchor
   faq.json               domande frequenti con la frase esatta della Mappa
+scripts/
+  check-faq.mjs          controlla che le FAQ citino ancora frasi della Mappa
 supabase/
   mercy_questions.sql    tabella del registro delle domande
 ```

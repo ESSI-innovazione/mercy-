@@ -41,6 +41,8 @@ Una routine di Claude Code nel cloud («Mercy · aggiorna la conoscenza», https
 - se l'artifact è andato avanti, rilegge tutte le pagine, riscrive `knowledge/` e `meta.json` e lancia `npm run check:faq`; una pagina nuova dell'artifact diventa un nuovo file `0N-*.md` (con la sua riga in `meta.json` e nella tabella qui sopra), una pagina tolta viene rimossa;
 - se tutte le FAQ reggono, fa commit e push su `main` (Vercel ridistribuisce); se qualche FAQ si è rotta, la sistema su un ramo `knowledge/v<versione>` e apre una pull request da rivedere.
 
+La routine va creata dall'account di Espedito, proprietario dell'artifact: impostazioni e prompt da copiare sono in `docs/routine-aggiorna-conoscenza.md`. Da un altro account la lettura si ferma a chiedere il permesso, perché l'artifact risulta di un'altra organizzazione.
+
 Se lo strumento Artifact non è disponibile nella sessione cloud, la routine non inventa nulla: si ferma e lo scrive nel riepilogo. In quel caso l'aggiornamento resta manuale (passi 1-5).
 
 ### Controllo di freschezza

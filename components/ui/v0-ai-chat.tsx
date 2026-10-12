@@ -6,9 +6,11 @@ import { cn } from "@/lib/utils";
 import { renderMarkdown } from "@/lib/markdown";
 import type { Answer } from "@/lib/search";
 import type { NewsItem } from "@/lib/news";
+import { MERCURY_URL, mercuryLinkFor, type MercuryLink } from "@/lib/mercury";
 import {
   ArrowUpIcon,
   CalendarClock,
+  ExternalLink,
   FileText,
   GitMerge,
   LoaderCircle,
@@ -261,6 +263,15 @@ export function VercelV0Chat({ news }: { news: NewsItem[] }) {
               {status.stale && status.source?.seq ? ` · fonte aggiornata (#${status.source.seq})` : ""}
             </span>
           )}
+          <a
+            href={`${MERCURY_URL}/login`}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-1.5 text-xs font-medium text-white bg-accent hover:bg-accent-600 px-2.5 py-1.5 rounded-lg transition-colors"
+          >
+            Mercury ERP
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
           {!empty && (
             <button
               type="button"
@@ -504,6 +515,12 @@ function AnswerView({ answer, onAsk, busy }: { answer: Answer; onAsk: (p: string
         </div>
       )}
 
+      {!simple && answer.kind !== "none" && (
+        <MercuryButton
+          link={mercuryLinkFor(answer.question, answer.passage?.where, answer.reply)}
+        />
+      )}
+
       {!simple && (
         <div className="text-[10px] text-muted-foreground/70" title={answer.source}>
           Mappa del CRM v{answer.source.replace(/^.*versione\s+(\S+).*$/, "$1")}
@@ -586,7 +603,30 @@ function NewsCard({ item, latest }: { item: NewsItem; latest: boolean }) {
           </button>
         </>
       )}
+      <div className="mt-2.5">
+        <MercuryButton link={mercuryLinkFor(item.title, item.body)} light />
+      </div>
     </li>
+  );
+}
+
+// "Apri in Mercury · <area>": opens Mercury ERP in a new tab.
+function MercuryButton({ link, light = false }: { link: MercuryLink; light?: boolean }) {
+  return (
+    <a
+      href={link.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      className={cn(
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs font-medium transition-colors",
+        light
+          ? "bg-primary text-white hover:bg-primary-500"
+          : "bg-accent text-white hover:bg-accent-600"
+      )}
+    >
+      {link.label ? `Apri in Mercury · ${link.label}` : "Apri Mercury ERP"}
+      <ExternalLink className="w-3 h-3" />
+    </a>
   );
 }
 

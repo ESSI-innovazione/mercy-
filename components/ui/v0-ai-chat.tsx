@@ -367,7 +367,7 @@ function Composer({
 }: ComposerProps) {
   return (
     <div className="w-full">
-      <div className="relative bg-surface rounded-xl border border-border focus-within:border-accent/70 transition-colors">
+      <div className="relative bg-white rounded-xl border-2 border-primary-100 shadow-lg shadow-black/20 focus-within:border-accent transition-colors">
         <div className="overflow-y-auto">
           <Textarea
             ref={textareaRef}
@@ -383,10 +383,10 @@ function Composer({
               "resize-none",
               "bg-transparent",
               "border-none",
-              "text-white text-sm",
+              "text-primary text-sm",
               "focus:outline-none",
               "focus-visible:ring-0 focus-visible:ring-offset-0",
-              "placeholder:text-muted-foreground placeholder:text-sm",
+              "placeholder:text-primary-300 placeholder:text-sm",
               "min-h-[60px]"
             )}
             style={{ overflow: "hidden" }}
@@ -394,7 +394,7 @@ function Composer({
         </div>
 
         <div className="flex items-center justify-between p-3">
-          <div className="text-[11px] text-muted-foreground pl-1">
+          <div className="text-[11px] text-primary-400 pl-1">
             Invio per inviare · Maiusc+Invio per andare a capo
           </div>
           <div className="flex items-center gap-2">
@@ -402,7 +402,7 @@ function Composer({
               <button
                 type="button"
                 onClick={onStop}
-                className="px-2 py-1 rounded-lg text-xs text-muted-foreground border border-dashed border-border hover:border-accent/60 hover:text-white transition-colors"
+                className="px-2 py-1 rounded-lg text-xs text-primary-400 border border-dashed border-primary-200 hover:border-accent hover:text-primary transition-colors"
               >
                 Ferma
               </button>
@@ -415,7 +415,7 @@ function Composer({
                 "px-1.5 py-1.5 rounded-lg text-sm transition-colors border flex items-center justify-between gap-1",
                 value.trim() && !busy
                   ? "bg-accent border-accent text-white hover:bg-accent-600"
-                  : "border-border text-muted-foreground"
+                  : "bg-primary-50 border-primary-100 text-primary-300"
               )}
             >
               {busy ? (

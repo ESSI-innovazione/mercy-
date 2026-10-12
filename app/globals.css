@@ -137,3 +137,50 @@ body {
     animation: none;
   }
 }
+
+/* Main page: 3D orange spheres floating behind the chat (components/ui/v0-ai-chat.tsx) */
+.mercy-sphere {
+  position: absolute;
+  border-radius: 9999px;
+  background: radial-gradient(
+    circle at 32% 28%,
+    #ffe6d1 0%,
+    #ffb380 10%,
+    #fc6e1a 30%,
+    #fc5a00 48%,
+    #b04000 75%,
+    #4a1a00 100%
+  );
+  box-shadow:
+    inset -24px -32px 64px rgba(7, 11, 21, 0.55),
+    inset 14px 18px 36px rgba(255, 224, 196, 0.25),
+    0 30px 90px rgba(252, 90, 0, 0.28);
+  animation: mercy-bob 9s ease-in-out infinite alternate;
+}
+.mercy-sphere-lg {
+  width: clamp(220px, 32vw, 440px);
+  height: clamp(220px, 32vw, 440px);
+  top: clamp(-120px, -6vw, -40px);
+  right: clamp(-140px, -7vw, -60px);
+}
+.mercy-sphere-sm {
+  width: clamp(90px, 11vw, 170px);
+  height: clamp(90px, 11vw, 170px);
+  bottom: 14%;
+  left: clamp(-60px, -3vw, -24px);
+  animation-duration: 7s;
+  animation-delay: -3s;
+}
+@keyframes mercy-bob {
+  from {
+    transform: translateY(0) rotate(0deg);
+  }
+  to {
+    transform: translateY(-26px) rotate(8deg);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .mercy-sphere {
+    animation: none;
+  }
+}

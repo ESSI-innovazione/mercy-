@@ -220,9 +220,15 @@ export function VercelV0Chat({ news }: { news: NewsItem[] }) {
   const empty = messages.length === 0;
 
   return (
-    <div className="flex flex-col min-h-screen w-full">
+    <div className="relative flex flex-col min-h-screen w-full overflow-x-hidden">
+      {/* 3D orange spheres in the background */}
+      <div className="pointer-events-none fixed inset-0 z-0 overflow-hidden" aria-hidden="true">
+        <div className="mercy-sphere mercy-sphere-lg" />
+        <div className="mercy-sphere mercy-sphere-sm" />
+      </div>
+
       {/* Header */}
-      <header className="sticky top-0 z-10 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border bg-primary/90 backdrop-blur">
+      <header className="sticky top-0 z-20 flex items-center justify-between px-4 sm:px-6 py-3 border-b border-border bg-primary/90 backdrop-blur">
         <div className="flex items-center gap-3">
           <span className="inline-flex items-center justify-center w-8 h-8 rounded-lg bg-accent text-white font-bold">
             M
@@ -271,7 +277,7 @@ export function VercelV0Chat({ news }: { news: NewsItem[] }) {
       {/* Body */}
       <main
         className={cn(
-          "flex-1 flex flex-col items-center w-full max-w-4xl mx-auto px-4 sm:px-6",
+          "relative z-10 flex-1 flex flex-col items-center w-full max-w-4xl mx-auto px-4 sm:px-6",
           empty ? "justify-center py-10 space-y-8" : "py-6"
         )}
       >

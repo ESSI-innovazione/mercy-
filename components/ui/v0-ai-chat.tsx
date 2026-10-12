@@ -110,6 +110,20 @@ const SUGGESTIONS: { icon: React.ReactNode; label: string; prompt: string }[] = 
   },
 ];
 
+// The answer is ready almost instantly; Mercy still takes a moment, like someone thinking.
+const MIN_THINKING_MS = 5000;
+
+function wait(ms: number, signal: AbortSignal) {
+  return new Promise<void>((resolve, reject) => {
+    if (ms <= 0) return resolve();
+    const t = setTimeout(resolve, ms);
+    signal.addEventListener("abort", () => {
+      clearTimeout(t);
+      reject(new DOMException("Aborted", "AbortError"));
+    });
+  });
+}
+
 let idCounter = 0;
 const nextId = () => `m${Date.now()}-${idCounter++}`;
 
@@ -151,6 +165,7 @@ export function VercelV0Chat() {
 
       const controller = new AbortController();
       abortRef.current = controller;
+      const startedAt = Date.now();
 
       try {
         const res = await fetch("/api/chat", {
@@ -168,6 +183,7 @@ export function VercelV0Chat() {
         }
 
         const answer = (await res.json()) as Answer;
+        await wait(MIN_THINKING_MS - (Date.now() - startedAt), controller.signal);
         setMessages((prev) => prev.map((m) => (m.id === assistantMsg.id ? { ...m, answer } : m)));
       } catch (err) {
         const msg =
